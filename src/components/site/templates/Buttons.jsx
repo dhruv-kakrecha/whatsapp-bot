@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+    /* eslint-disable react/prop-types */
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import {
@@ -38,9 +38,6 @@ const Buttons = ({
     required = true,
     maxLength = 4
 }) => {
-
-
-
 
     const buttonData = [
         { value: 0, label: "Quick Reply" },
