@@ -19,6 +19,11 @@ const menu = {
         name: "Templates",
         // icon: <SmileFilled />,
       },
+      {
+        path: "/add-contacts",
+        name: "Contacts",
+        // icon: <SmileFilled />,
+      },
     ],
   },
   location: {
