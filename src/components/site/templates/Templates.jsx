@@ -20,6 +20,9 @@ const RichCard = ({
         }
     ])
 
+    useEffect(() => {
+        const { data } = axios.post("https://wa-wati-backend.vercel.app/templates/create")
+    }, [])
 
     const [url, setUrl] = useState("")
     const [form] = Form.useForm();

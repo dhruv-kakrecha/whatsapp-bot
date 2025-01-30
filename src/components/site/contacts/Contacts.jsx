@@ -2,31 +2,22 @@ import { Button, Card, Col, Flex, Popconfirm, Row, Table, Tooltip, Typography } 
 import React, { useState } from 'react'
 import TableActions from './TableActions';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { addContacts } from '../../../redux/contacts/contactSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Contacts = () => {
 
     const [loading, setLoading] = useState(false)
-    const [contacts, setContacts] = useState([
-        {
-            name: "Neel Mori",
-            contactNumber: "1212457896",
-        },
-        {
-            name: "Vedant",
-            contactNumber: "7485961245",
-        },
-        {
-            name: "dhruv",
-            contactNumber: "5241638596",
-        },
-    ])
+    // const [contacts, setContacts] = useState([])
+    const dispatch = useDispatch()
+    const { contacts } = useSelector(state => state.contacts)
 
     const handleAddContact = (contact) => {
-        setContacts(prevContacts => [...prevContacts, contact])
+        dispatch(addContacts([contact]))
     }
 
     const handleImportData = (newData) => {
-        setContacts(prevContacts => [...prevContacts, ...newData])
+        dispatch(addContacts(newData))
     }
 
     const columns = [

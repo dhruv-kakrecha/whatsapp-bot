@@ -12,7 +12,9 @@ const AddContacts = ({
   const [form] = Form.useForm();
 
   const handleOk = () => {
-    
+    const formData = form.getFieldsValue()
+    handleAddContact(formData);
+    handleCloseModal();
   }
 
   return (
@@ -20,7 +22,7 @@ const AddContacts = ({
       title="Add Contact"
       centered
       open={open}
-      onOk={form.submit}
+      onOk={handleOk}
       onCancel={handleCloseModal}
       okText="Add"
       cancelText="Cancel"
