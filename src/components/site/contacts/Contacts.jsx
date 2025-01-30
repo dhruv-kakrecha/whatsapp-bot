@@ -19,10 +19,6 @@ const Contacts = () => {
             name: "dhruv",
             contactNumber: "5241638596",
         },
-        {
-            name: "dhruv",
-            contactNumber: "4185748514",
-        },
     ])
 
     const handleAddContact = (contact) => {

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
-import { Col, Form, Input, message, Radio, Row, Space } from "antd";
+import { Button, Col, Form, Input, message, Radio, Row, Space } from "antd";
 // import Text from "./Text";
 // import { MediaUpload } from "../../../../MediaUpload";
 import Buttons from "./Buttons";
@@ -9,25 +9,24 @@ import UploadMedia from "./UploadMedia";
 import axios from "axios";
 
 const RichCard = ({
-    templateType,
-    richCardDetails,
-    initialValueToMedia,
-    form,
-    //   buttons,
-    // handleAddButton = () => { },
-    //   handleButtonFieldsChange = () => {},
-    handleDeleteButton = () => { },
-    onChoose = () => { },
-    onDelete = () => { },
-    handleFieldsChange = () => { },
 }) => {
 
+    const [buttons, setButtons] = useState([
+        {
+            id: 0,
+            type: 0,
+            title: "",
+            payload: "",
+        }
+    ])
+    const [url, setUrl] = useState("")
+    const [form] = Form.useForm();
 
-    // useEffect(() => {
-    //     axios.post("https://wa-wati-backend.vercel.app/templates/create")
-    // }, [])
 
-    const [buttons, setButtons] = useState([])
+    const handleUpload = ({ file }) => {
+        const fileUrl = URL.createObjectURL(file);
+        setUrl(fileUrl)
+    }
 
     const handleAddButton = () => {
         if (buttons?.length === 3) {
@@ -51,14 +50,12 @@ const RichCard = ({
         updatedButtons[index] = { ...updatedButtons[index], [fieldName]: newValue };
         setButtons(updatedButtons);
     };
-    // const [mediaModal, setMediaModal] = useState(true);
-    const handleChoose = async (selectedImages, mediaDataWithUrls) => {
-        onChoose(selectedImages, mediaDataWithUrls);
-    };
 
-    const handleDeleteMedia = async () => {
-        onDelete();
-    };
+    const handleDeleteButton = (index) => {
+        if (buttons.length === 1) return;
+        const updatedButtons = buttons?.filter((_, i) => i !== index);
+        setButtons(updatedButtons);
+      };
 
     return (
         <div>
@@ -69,12 +66,12 @@ const RichCard = ({
 
                     <Row gutter={[16, 24]}>
                         <Col md={12}>
-                            <UploadMedia />
+                            <UploadMedia url={url} handleUpload={handleUpload} />
                         </Col>
                         <Col md={12}>
                             <Form.Item
                                 style={{ marginBottom: "15px" }}
-                                name={`rich_card_title_${templateType}`}
+                                name={"title"}
                                 label={"Title"}
                                 rules={[
                                     {
@@ -84,10 +81,9 @@ const RichCard = ({
                                     },
                                     { max: 25, message: "Title must be within 25 characters" },
                                 ]}
-                                initialValue={richCardDetails?.title ?? ""}
                             >
                                 <Input
-                                    onChange={(e) => handleFieldsChange(e.target.value, "title")}
+                                    // onChange={(e) => handleFieldsChange(e.target.value, "title")}
                                     //   value={title}
                                     //   defaultValue={title}
 
@@ -97,13 +93,13 @@ const RichCard = ({
                                 />
                             </Form.Item>
                             <Form.Item
-                                // name={`rich_card_title_${templateType}`}
+                                name={"description"}
                                 label={"Deacription"}
                                 rules={[
                                     {
                                         required: true,
                                         type: "string",
-                                        message: "Please enter title",
+                                        message: "Please enter description",
                                     },
                                     { max: 999, message: "Description must be within 999 characters" },
                                 ]}
@@ -121,22 +117,25 @@ const RichCard = ({
                         </Col>
                     </Row>
 
-                    {/* <Text
-            type={templateType}
-            initialValue={richCardDetails?.description ?? ""}
-            handleFieldsChange={handleFieldsChange}
-          /> */}
                 </Col>
 
                 <Buttons
                     handleAddButton={handleAddButton}
                     buttons={buttons}
                     handleButtonFieldsChange={handleButtonFieldsChange}
-                    handleDeleteButton={handleDeleteButton}
-                    type={templateType}
                     form={form}
                     maxLength={3}
                 />
+
+                <Button
+                    type="primary"
+                    style={{
+                        padding: "10px 30px",
+                        marginTop: 25,
+                    }}
+                >
+                    Create
+                </Button>
             </Form>
         </div>
     );

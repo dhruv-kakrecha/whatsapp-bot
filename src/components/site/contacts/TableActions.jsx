@@ -1,5 +1,5 @@
 import { ImportOutlined, PlusCircleOutlined, RedoOutlined, UploadOutlined } from '@ant-design/icons';
-import { Badge, Button, Card, Col, Flex, Input, Row, Typography, Upload } from 'antd'
+import { Badge, Button, Card, Col, Flex, Input, message, Row, Typography, Upload } from 'antd'
 import React, { useState } from 'react'
 import AddContacts from './AddContacts';
 import * as XLSX from "xlsx";
@@ -22,6 +22,16 @@ const TableActions = ({
 
 
     const handleUpload = (file) => {
+
+        const isExcel =
+            file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || // .xlsx
+            file.type === "application/vnd.ms-excel"; // .xls
+
+        if (!isExcel) {
+            message.error("Only Excel files (.xls, .xlsx) are allowed!");
+            return false;
+        }
+
         const reader = new FileReader();
 
         reader.onload = (e) => {
@@ -33,14 +43,15 @@ const TableActions = ({
 
             // Format data to match desired JSON structure
             const formattedData = jsonData.map((row) => ({
-                name: row.name, // Adjust keys based on Excel column headers
+                name: row.name,
                 contactNumber: row["contact number"],
             }));
 
             handleImportData(formattedData);
         };
 
-        return false; // Prevent auto upload
+        reader.readAsBinaryString(file);
+        return false;
     };
 
     return (
