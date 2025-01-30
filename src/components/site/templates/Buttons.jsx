@@ -1,22 +1,16 @@
-/* eslint-disable react/prop-types */
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
     Button,
     Card,
     Col,
-    DatePicker,
     Form,
     Input,
-    InputNumber,
     Row,
     Select,
     Typography,
 } from "antd";
 import {
-    CalendarOutlined,
     CloseOutlined,
-    EnvironmentOutlined,
     LinkOutlined,
     MessageOutlined,
     PhoneOutlined,
@@ -25,7 +19,6 @@ import {
 import { isValidPhoneNumber } from "libphonenumber-js";
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
-import TextArea from "antd/es/input/TextArea";
 const { Title } = Typography;
 
 const Buttons = ({
@@ -39,11 +32,25 @@ const Buttons = ({
     maxLength = 4
 }) => {
 
-    const buttonData = [
+    let actions = [
         { value: 0, label: "Quick Reply" },
         { value: 1, label: "Call Button" },
         { value: 2, label: "URL Button" },
     ]
+
+    useEffect(() => {
+        const callButtons = buttons.filter(button => button.type === 1);
+        const urlButtons = buttons.filter(button => button.type === 2);
+
+        if (callButtons.length >= 2) {
+            actions[1].disabled = true
+        }
+
+        if (urlButtons.length >= 2) {
+            actions[2].disabled = true
+        }
+    }, [buttons])
+
     return (
         <div>
             <Col>
@@ -113,7 +120,7 @@ const Buttons = ({
                                                 handleButtonFieldsChange(index, "type", value)
                                             }
                                             style={{ width: "100%" }}
-                                            options={buttonData}
+                                            options={actions}
                                         />
                                     </Form.Item>
                                 </Col>
@@ -238,16 +245,12 @@ const Buttons = ({
                                         {button?.type === 0 && <MessageOutlined />}
                                         {button?.type === 1 && <PhoneOutlined />}
                                         {button?.type === 2 && <LinkOutlined />}
-                                        {button?.type === 3 && <EnvironmentOutlined />}
-                                        {button?.type === 4 && <CalendarOutlined />}
                                     </>
                                 }
                             >
                                 {button?.type === 0 && "Quick Reply"}
                                 {button?.type === 1 && "Call Button"}
                                 {button?.type === 2 && "URL Button"}
-                                {button?.type === 3 && "Location"}
-                                {button?.type === 4 && "Calender"}
                             </Button>
                         </Card>
                     </Col>
