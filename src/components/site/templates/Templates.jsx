@@ -19,6 +19,8 @@ const RichCard = ({
             payload: "",
         }
     ])
+
+
     const [url, setUrl] = useState("")
     const [form] = Form.useForm();
 
@@ -47,15 +49,42 @@ const RichCard = ({
 
     const handleButtonFieldsChange = (index, fieldName, newValue) => {
         const updatedButtons = [...buttons];
-        updatedButtons[index] = { ...updatedButtons[index], [fieldName]: newValue };
-        setButtons(updatedButtons);
+
+        if (fieldName === "type") {
+            if (newValue === 0) {
+                // Update button type to normal (0)
+                updatedButtons[index] = { ...updatedButtons[index], type: newValue };
+                setButtons(updatedButtons);
+            } else if (newValue === 1 || newValue === 2) {
+                const callButtons = buttons.filter(button => button.type === 1);
+                const urlButtons = buttons.filter(button => button.type === 2);
+
+                if (newValue === 1 && callButtons.length >= 2) {
+                    message.warning("Cannot add more than two Call to Action buttons.");
+                    return;
+                }
+
+                if (newValue === 2 && urlButtons.length >= 2) {
+                    message.warning("Cannot add more than two URL buttons.");
+                    return;
+                }
+
+                // If within limits, update button type
+                updatedButtons[index] = { ...updatedButtons[index], type: newValue };
+                setButtons(updatedButtons);
+            }
+        } else {
+            updatedButtons[index] = { ...updatedButtons[index], [fieldName]: newValue };
+            setButtons(updatedButtons);
+        }
     };
+
 
     const handleDeleteButton = (index) => {
         if (buttons.length === 1) return;
         const updatedButtons = buttons?.filter((_, i) => i !== index);
         setButtons(updatedButtons);
-      };
+    };
 
     return (
         <div>
@@ -123,6 +152,7 @@ const RichCard = ({
                     handleAddButton={handleAddButton}
                     buttons={buttons}
                     handleButtonFieldsChange={handleButtonFieldsChange}
+                    handleDeleteButton={handleDeleteButton}
                     form={form}
                     maxLength={3}
                 />
