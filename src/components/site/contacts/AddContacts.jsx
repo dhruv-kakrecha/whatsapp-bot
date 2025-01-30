@@ -1,21 +1,30 @@
-import { Form, Input, Modal } from 'antd'
-import { isValidPhoneNumber } from 'libphonenumber-js';
-import React from 'react'
-import PhoneInput from 'react-phone-input-2';
+import { Form, Input, Modal } from "antd";
+import { isValidPhoneNumber } from "libphonenumber-js";
+import React, { useEffect } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css"; // Import styles for PhoneInput
 
-const AddContacts = ({
-  open,
-  handleCloseModal,
-  handleAddContact
-}) => {
-
+const AddContacts = ({ open, handleCloseModal, handleSubmit, isEdit, index, singleData }) => {
   const [form] = Form.useForm();
 
-  const handleOk = () => {
-    const formData = form.getFieldsValue()
-    handleAddContact(formData);
-    handleCloseModal();
-  }
+  useEffect(() => {
+    if (isEdit && singleData) {
+      form.setFieldsValue({
+        name: singleData.name,
+        contactNumber: singleData.contactNumber,
+      });
+    }
+  }, [isEdit, singleData, form]);
+
+  const handleOk = async () => {
+    try {
+      const formData = await form.validateFields();
+      handleSubmit(isEdit ? index : null, formData);
+      handleCloseModal();
+    } catch (error) {
+      console.log("Validation failed:", error);
+    }
+  };
 
   return (
     <Modal
@@ -24,17 +33,17 @@ const AddContacts = ({
       open={open}
       onOk={handleOk}
       onCancel={handleCloseModal}
-      okText="Add"
+      okText={isEdit ? "Update" : "Add"}
       cancelText="Cancel"
     >
-      <Form form={form} layout="vertical" >
+      <Form form={form} layout="vertical">
         <Form.Item
           label="Name"
           name="name"
           rules={[
             {
               required: true,
-              message: 'Please input username!',
+              message: "Please enter a name!",
             },
           ]}
         >
@@ -43,24 +52,22 @@ const AddContacts = ({
 
         <Form.Item
           label="Contact Number"
-          name={"contactNumber"}
+          name="contactNumber"
           rules={[
             {
               required: true,
-              message: "",
+              message: "Please enter a valid phone number",
             },
             () => ({
-              validator(rule, value) {
-                const valueToCheck = value?.includes("+")
-                  ? value
-                  : "+" + value;
-                const isValid = isValidPhoneNumber(valueToCheck);
-                if (value && isValid) {
-                  return Promise.resolve();
+              validator(_, value) {
+                if (!value || typeof value !== "string") {
+                  return Promise.reject("Invalid phone number format");
                 }
-                return Promise.reject(
-                  "Please enter valid phone number"
-                );
+
+                const valueToCheck = value.includes("+") ? value : "+" + value;
+                return isValidPhoneNumber(valueToCheck)
+                  ? Promise.resolve()
+                  : Promise.reject("Please enter a valid phone number");
               },
             }),
           ]}
@@ -68,17 +75,14 @@ const AddContacts = ({
           <PhoneInput
             country={"in"}
             inputStyle={{ width: "100%" }}
-            name="phone"
             placeholder="Enter Phone Number"
-            inputProps={{
-              size: "large",
-              maxLength: 15,
-            }}
+            onChange={(phone) => form.setFieldsValue({ contactNumber: phone })} 
           />
         </Form.Item>
+
       </Form>
     </Modal>
-  )
-}
+  );
+};
 
-export default AddContacts
+export default AddContacts;

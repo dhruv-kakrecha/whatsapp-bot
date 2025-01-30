@@ -14,8 +14,8 @@ const TableActions = ({
     handleAddContact
 }) => {
 
-    const [open, setOpen] = useState(false)
-
+    const [open, setOpen] = useState(false);
+    
     const handleCloseModal = () => {
         setOpen(false)
     }

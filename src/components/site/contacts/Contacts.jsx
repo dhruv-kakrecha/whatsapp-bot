@@ -2,13 +2,17 @@ import { Button, Card, Col, Flex, Popconfirm, Row, Table, Tooltip, Typography } 
 import React, { useState } from 'react'
 import TableActions from './TableActions';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { addContacts } from '../../../redux/contacts/contactSlice';
+import { addContacts, editContact } from '../../../redux/contacts/contactSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import AddContacts from './AddContacts';
 
 const Contacts = () => {
 
-    const [loading, setLoading] = useState(false)
-    // const [contacts, setContacts] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const [singleData, setSingleData] = useState({});
+
     const dispatch = useDispatch()
     const { contacts } = useSelector(state => state.contacts)
 
@@ -18,6 +22,16 @@ const Contacts = () => {
 
     const handleImportData = (newData) => {
         dispatch(addContacts(newData))
+    }
+
+    const handleEditContact = (index, data) => {
+        dispatch(editContact({ index, data }))
+    }
+
+    const handleCloseModal = () => {
+        setOpen(false)
+        isEdit(false)
+        setSingleData({})
     }
 
     const columns = [
@@ -41,19 +55,15 @@ const Contacts = () => {
             key: "action",
             fixed: "right",
             width: 100,
-            render: (_, record) => (
+            render: (_, record, index) => (
                 <Flex gap="small" vertical>
                     <Flex wrap gap="small">
                         <Tooltip title={<span style={{ fontSize: "0.8rem" }}>Edit</span>}>
                             <Button
                                 onClick={() => {
-                                    showModal("edit", record);
-                                    setBrandDetails({
-                                        id: record?._id,
-                                        name: record?.name,
-                                        website: record?.website,
-                                        logo: record?.logo,
-                                    });
+                                    setIsEdit(true)
+                                    setOpen(true)
+                                    setSingleData({ index, record })
                                 }}
                                 size="small"
                                 shape="circle"
@@ -123,6 +133,7 @@ const Contacts = () => {
                     />
                 </Card>
             </Flex>
+            <AddContacts open={open} handleSubmit={handleEditContact} handleCloseModal={handleCloseModal} isEdit={isEdit} singleData={singleData?.record} index={singleData?.index} />
         </div>
     )
 }

@@ -35,6 +35,7 @@ function ProLayoutWrapper({ children }) {
   //     </div>
   //   </PageContainer>
   // );
+
   const props = {
     ...defaultProps,
     location: {
@@ -80,26 +81,8 @@ function ProLayoutWrapper({ children }) {
         token={{
           paddingInlinePageContainerContent: 40,
         }}
-        // extra={buttons ?? []}
-        extra={[]}
-        //subTitle="Sub title"
-        footer={
-          [
-            // <Button key="3">Footer Button 1</Button>,
-            // <Button key="2" type="primary">
-            //   Footer Button 2
-            // </Button>,
-          ]
-        }
       >
-        <ProCard
-          style={
-            {
-              //height: "200vh",
-              //minHeight: 800,
-            }
-          }
-        >
+        <ProCard>
           {children}
         </ProCard>
       </PageContainer>

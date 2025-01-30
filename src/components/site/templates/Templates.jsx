@@ -20,14 +20,69 @@ const RichCard = ({
         }
     ])
 
-    useEffect(() => {
-        const { data } = axios.post("https://wa-wati-backend.vercel.app/templates/create")
-    }, [])
+    // useEffect(() => {
+    //     const { data } = axios.post("https://wa-wati-backend.vercel.app/templates/create")
+    // }, [])
 
     const [url, setUrl] = useState("")
     const [form] = Form.useForm();
 
 
+
+    const handleCreateTemplate = () => {
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNTVkZWQ3Mi03NTY2LTQzYjQtOTJkNi1mNzY4YTJlYjI5M2QiLCJ1bmlxdWVfbmFtZSI6IkRyZGlhbW9uZGF1dG9AZ21haWwuY29tIiwibmFtZWlkIjoiRHJkaWFtb25kYXV0b0BnbWFpbC5jb20iLCJlbWFpbCI6IkRyZGlhbW9uZGF1dG9AZ21haWwuY29tIiwiYXV0aF90aW1lIjoiMDEvMzAvMjAyNSAwODo1Nzo0MSIsInRlbmFudF9pZCI6IjM2Njk4MyIsImRiX25hbWUiOiJtdC1wcm9kLVRlbmFudHMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBRE1JTklTVFJBVE9SIiwiZXhwIjoyNTM0MDIzMDA4MDAsImlzcyI6IkNsYXJlX0FJIiwiYXVkIjoiQ2xhcmVfQUkifQ.JXaVPPsDpgz8AJQvcmrwSRSMeaiZ_Z5mSd8BCVgGdtU"
+        const payload = {
+            "id": "",
+            "type": "template",
+            "category": "MARKETING",
+            "subCategory": "STANDARD",
+            "buttonsType": "quick_reply_and_call_to_action",
+            "buttons": [
+                {
+                    "type": "url",
+                    "parameter": {
+                        "text": "Visit us",
+                        "phoneNumber": "",
+                        "url": "https://www.wati.io",
+                        "urlType": "static"
+                    }
+                },
+                {
+                    "type": "call",
+                    "parameter": {
+                        "text": "Call now",
+                        "urlType": "none",
+                        "phoneNumber": "919999999999"
+                    }
+                },
+                {
+                    "type": "quick_reply",
+                    "parameter": {
+                        "text": "Interested",
+                        "urlType": "none"
+                    }
+                }
+            ],
+            "footer": "Footer",
+            "header": {
+                "type": "image",
+                "link": "https://images.pexels.com/photos/30434990/pexels-photo-30434990/free-photo-of-portrait-of-a-fluffy-dog-against-blue-sky.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                "mediaFromPC": "",
+                "mediaHeaderId": ""
+            },
+            "customParams": [],
+            "elementName": "Test temp1",
+            "body": "Body text",
+            "language": "en",
+            "client_id": "366983"
+        }
+
+        axios.post("https://wa-wati-backend.vercel.app/templates/create", payload , {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    }
     const handleUpload = ({ file }) => {
         const fileUrl = URL.createObjectURL(file);
         setUrl(fileUrl)
@@ -167,6 +222,7 @@ const RichCard = ({
                         padding: "10px 30px",
                         marginTop: 25,
                     }}
+                    onClick={handleCreateTemplate}
                 >
                     Create
                 </Button>
