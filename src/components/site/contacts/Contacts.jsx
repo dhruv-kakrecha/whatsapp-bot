@@ -5,6 +5,8 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { addContacts, editContact } from '../../../redux/contacts/contactSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AddContacts from './AddContacts';
+import ProComponentWrapper from '../ProComponentWrapper';
+import { PageContainer, ProCard } from '@ant-design/pro-components';
 
 const Contacts = () => {
 
@@ -95,46 +97,50 @@ const Contacts = () => {
     ];
 
     return (
-        <div>
-            <Flex style={{
-                flexDirection: 'column',
-                gap: "1rem",
-                padding: "0 2.5rem"
-            }}>
-                <TableActions
-                    handleAddContact={handleAddContact}
-                    handleImportData={handleImportData}
-                />
-
-                <Card>
-                    <Table
-                        // rowSelection={rowSelection}
-                        columns={columns}
-                        dataSource={contacts}
-                        loading={loading}
-                        // pagination={{
-                        //     current: page,
-                        //     total: templatesTotal,
-                        //     pageSize: pageSize,
-                        //     showSizeChanger: true,
-                        //     onChange: (page, pageSize) => {
-                        //         setPage(page);
-                        //         setPageSize(pageSize);
-                        //     },
-                        // }}
-                        rowKey={(record) => record._id}
-                        footer={() => {
-                            return (
-                                <Typography.Text>
-                                    {"Total"}: {contacts.length}
-                                </Typography.Text>
-                            );
-                        }}
+        <PageContainer
+            title="Contacts"
+        >
+            <ProCard>
+                <Flex style={{
+                    flexDirection: 'column',
+                    gap: "1rem",
+                    padding: "0 2.5rem"
+                }}>
+                    <TableActions
+                        handleAddContact={handleAddContact}
+                        handleImportData={handleImportData}
                     />
-                </Card>
-            </Flex>
-            <AddContacts open={open} handleSubmit={handleEditContact} handleCloseModal={handleCloseModal} isEdit={isEdit} singleData={singleData?.record} index={singleData?.index} />
-        </div>
+
+                    <Card>
+                        <Table
+                            // rowSelection={rowSelection}
+                            columns={columns}
+                            dataSource={contacts}
+                            loading={loading}
+                            // pagination={{
+                            //     current: page,
+                            //     total: templatesTotal,
+                            //     pageSize: pageSize,
+                            //     showSizeChanger: true,
+                            //     onChange: (page, pageSize) => {
+                            //         setPage(page);
+                            //         setPageSize(pageSize);
+                            //     },
+                            // }}
+                            rowKey={(record) => record._id}
+                            footer={() => {
+                                return (
+                                    <Typography.Text>
+                                        {"Total"}: {contacts.length}
+                                    </Typography.Text>
+                                );
+                            }}
+                        />
+                    </Card>
+                </Flex>
+                <AddContacts open={open} handleSubmit={handleEditContact} handleCloseModal={handleCloseModal} isEdit={isEdit} singleData={singleData?.record} index={singleData?.index} />
+            </ProCard>
+        </PageContainer>
     )
 }
 

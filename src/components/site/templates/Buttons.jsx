@@ -379,7 +379,7 @@ const Buttons = ({
                                     >
                                         <Select
                                             value={button.type}
-                                            onChange={(value) => handleButtonFieldsChange(index, value, null)}
+                                            onChange={(value) => handleButtonFieldsChange(index, value)}
                                             style={{ width: "100%" }}
                                             options={actions}
                                         />

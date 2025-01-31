@@ -5,6 +5,7 @@ import { Test } from "./Test";
 import { Route, Routes } from "react-router-dom";
 import RichCard from "./components/site/templates/Templates";
 import Contacts from "./components/site/contacts/Contacts";
+import AllAcounts from "./components/site/accounts/AllAcounts";
 
 function App() {
   const RouteWrapper = ({ component: Component, ...props }) => {
@@ -24,6 +25,7 @@ function App() {
         <Route exact path="/" element={<RouteWrapper component={Test} />} />
         <Route exact path="/templates" element={<RouteWrapper component={RichCard} />} />
         <Route exact path="/add-contacts" element={<RouteWrapper component={Contacts} />} />
+        <Route exact path="/acounts" element={<RouteWrapper component={AllAcounts} />} />
       </Routes>
     </>
   );

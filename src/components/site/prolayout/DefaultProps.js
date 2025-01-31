@@ -24,11 +24,15 @@ const menu = {
         name: "Contacts",
         // icon: <SmileFilled />,
       },
+      {
+        path: "/acounts",
+        name: "Acounts",
+        // icon: <SmileFilled />,
+      },
     ],
   },
   location: {
     pathname: "/",
   },
 };
-
 export default menu;

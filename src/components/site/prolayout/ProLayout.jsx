@@ -77,15 +77,15 @@ function ProLayoutWrapper({ children }) {
         );
       }}
     >
-      <PageContainer
+      {children}
+      {/* <PageContainer
         token={{
           paddingInlinePageContainerContent: 40,
         }}
       >
         <ProCard>
-          {children}
         </ProCard>
-      </PageContainer>
+      </PageContainer> */}
     </ProLayout>
   );
 }
