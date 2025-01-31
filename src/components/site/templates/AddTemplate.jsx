@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Input, message, Radio, Row, Space } from "antd";
 import Buttons from "./Buttons";
-import UploadMedia from "./UploadMedia";
 import axios from "axios";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
+import { useNavigate } from "react-router-dom";
 
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNTVkZWQ3Mi03NTY2LTQzYjQtOTJkNi1mNzY4YTJlYjI5M2QiLCJ1bmlxdWVfbmFtZSI6IkRyZGlhbW9uZGF1dG9AZ21haWwuY29tIiwibmFtZWlkIjoiRHJkaWFtb25kYXV0b0BnbWFpbC5jb20iLCJlbWFpbCI6IkRyZGlhbW9uZGF1dG9AZ21haWwuY29tIiwiYXV0aF90aW1lIjoiMDEvMzAvMjAyNSAwODo1Nzo0MSIsInRlbmFudF9pZCI6IjM2Njk4MyIsImRiX25hbWUiOiJtdC1wcm9kLVRlbmFudHMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBRE1JTklTVFJBVE9SIiwiZXhwIjoyNTM0MDIzMDA4MDAsImlzcyI6IkNsYXJlX0FJIiwiYXVkIjoiQ2xhcmVfQUkifQ.JXaVPPsDpgz8AJQvcmrwSRSMeaiZ_Z5mSd8BCVgGdtU"
 
-const RichCard = ({
+const AddTemplate = ({
 }) => {
-
+    const navigate = useNavigate()
     const [buttons, setButtons] = useState([
         {
             type: "quick_reply",
@@ -46,11 +45,13 @@ const RichCard = ({
                 client_id: "366983"
             };
 
-            const response = await axios.post("https://wa-wati-backend.vercel.app/templates/create", payload, {
-                headers: { Authorization: `Bearer ${TOKEN}` }
-            });
+            const { data } = await axios.post("https://wa-wati-backend.vercel.app/templates/create", payload);
 
-            message.success("Template created successfully!");
+            if (data.success) {
+                message.success("Template created successfully!");
+                navigate("/templates")
+            }
+
         } catch (error) {
             if (error.errorFields) {
                 message.error("Please fill in all required fields.");
@@ -110,7 +111,7 @@ const RichCard = ({
 
     return (
         <PageContainer
-            title="Templates"
+            title="Create template"
         >
             <ProCard>
                 <Form form={form} layout="vertical">
@@ -244,9 +245,7 @@ const RichCard = ({
                 </Form>
             </ProCard>
         </PageContainer>
-
-
     );
 };
 
-export default RichCard;
+export default AddTemplate;

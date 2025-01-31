@@ -1,28 +1,39 @@
 import { Form, Input, Modal } from "antd";
-import { isValidPhoneNumber } from "libphonenumber-js";
 import React, { useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css"; // Import styles for PhoneInput
 
 const AddContacts = ({ open, handleCloseModal, handleSubmit, isEdit, index, singleData }) => {
   const [form] = Form.useForm();
-  const [phone, setPhone] = useState("")
-  console.log("Phone", phone);
+  const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("");
 
   useEffect(() => {
     if (isEdit && singleData) {
       form.setFieldsValue({
         name: singleData.name,
-        // contactNumber: singleData.contactNumber,
       });
-      setPhone(singleData.contactNumber)
+
+      // Extract only the mobile number (remove country code)
+      const cleanedNumber = singleData.phone?.replace(`+${singleData.countryCode}`, "");
+
+      setPhone(cleanedNumber);
+      setCountryCode(singleData.countryCode || "91");
     }
   }, [isEdit, singleData, form]);
 
   const handleOk = async () => {
     try {
       const formData = await form.validateFields();
-      handleSubmit(isEdit ? index : null, formData);
+
+      const newValue = {
+        ...formData,
+        phone,
+        countryCode
+      };
+
+      handleSubmit(newValue);
+      form.resetFields();
       handleCloseModal();
     } catch (error) {
       console.log("Validation failed:", error);
@@ -55,38 +66,30 @@ const AddContacts = ({ open, handleCloseModal, handleSubmit, isEdit, index, sing
 
         <Form.Item
           label="Contact Number"
-          name="contactNumber"
+          name="phone"
           rules={[
             {
               required: true,
               message: "Please enter a valid phone number",
             },
-            // () => ({
-            //   validator(_, value) {
-            //     if (!value || typeof value !== "string") {
-            //       return Promise.reject("Invalid phone number format");
-            //     }
-
-            //     const valueToCheck = value.includes("+") ? value : "+" + value;
-            //     return isValidPhoneNumber(valueToCheck)
-            //       ? Promise.resolve()
-            //       : Promise.reject("Please enter a valid phone number");
-            //   },
-            // }),
           ]}
         >
           <PhoneInput
-            country={"in"}
-            value={phone}
-            inputProps={{
-              value: singleData?.contactNumber
-            }}
+            country={"in"} // Default country
+            value={`${countryCode}${phone}`} // Display full number for consistency
             inputStyle={{ width: "100%" }}
             placeholder="Enter Phone Number"
-            onChange={(phone) => form.setFieldsValue({ contactNumber: phone })}
+            onChange={(value, country) => {
+              const dialCode = country.dialCode; // Get numerical country code
+              const mobileNumber = value.replace(dialCode, ""); // Remove country code
+              console.log("Phone Number", mobileNumber);
+
+              setPhone(mobileNumber);
+              setCountryCode(dialCode);
+              form.setFieldsValue({ phone: value });
+            }}
           />
         </Form.Item>
-
       </Form>
     </Modal>
   );

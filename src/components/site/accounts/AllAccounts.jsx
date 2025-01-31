@@ -1,20 +1,18 @@
 import { Button, Card, Flex, Popconfirm, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { DeleteOutlined, EditOutlined, ImportOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, ImportOutlined } from '@ant-design/icons';
 import React, { useState } from 'react'
-import AddContacts from './AddContacts';
 import TableActions from '../../common/TableActions';
 import * as XLSX from "xlsx";
 import axiosInstance from '../../../axios/axiosInstance';
+import { accountsData } from '../../../../dummyData/data';
+import { Link } from 'react-router-dom';
 
 
-const Contacts = () => {
+const AllAccounts = () => {
 
     const [loading, setLoading] = useState(false);
-    const [contacts, setContacts] = useState([{}]);
-    const [open, setOpen] = useState(false);
-    const [isEdit, setIsEdit] = useState(false);
-    const [singleData, setSingleData] = useState({});
+    const allAccounts = accountsData
 
 
     const handleUpload = async (file) => {
@@ -37,9 +35,12 @@ const Contacts = () => {
             const jsonData = XLSX.utils.sheet_to_json(sheet);
 
             // Format data to match desired JSON structure
-            const contacts = jsonData.map(({ phone, countryCode }) => ({ phone, countryCode }));
+            const accounts = jsonData.map(({ name, phone, username, password, loginUrl }) => ({ name, phone, username, password, loginUrl }));
 
-            const { data } = await axiosInstance.post("contacts/add/bulk", { contacts })
+            console.log("accounts", accounts);
+
+
+            const { data } = await axiosInstance.post("accounts/add/bulk", { accounts })
 
         };
 
@@ -47,18 +48,7 @@ const Contacts = () => {
         return false;
     };
 
-    const handleSubmit = async (newValue) => {
-        const { data } = await axiosInstance.post("contacts/add/single", newValue);
-    }
-
     const tableButtons = [
-        <Button
-            key={"add"}
-            icon={<PlusCircleOutlined />}
-            onClick={() => setOpen(true)}
-        >
-            Add
-        </Button>,
         <Upload
             key={"import"}
             beforeUpload={handleUpload}
@@ -66,13 +56,6 @@ const Contacts = () => {
             <Button type='primary' icon={<ImportOutlined />}>Import</Button>
         </Upload >
     ]
-
-
-    const handleCloseModal = () => {
-        setOpen(false)
-        setIsEdit(false)
-        setSingleData({})
-    }
 
     const columns = [
         {
@@ -88,16 +71,28 @@ const Contacts = () => {
             render: (name) => name ?? "-",
         },
         {
-            title: 'Country Code',
-            dataIndex: 'countryCode',
-            key: 'countryCode',
-            render: (countryCode) => countryCode ?? "-",
-        },
-        {
-            title: 'Phone Number',
+            title: 'Phone',
             dataIndex: 'phone',
             key: 'phone',
             render: (phone) => phone ?? "-",
+        },
+        {
+            title: 'Username',
+            dataIndex: 'username',
+            key: 'username',
+            render: (username) => username ?? "-",
+        },
+        {
+            title: 'Password',
+            dataIndex: 'password',
+            key: 'password',
+            render: (password) => password ?? "-",
+        },
+        {
+            title: 'Login URL',
+            dataIndex: 'loginUrl',
+            key: 'loginUrl',
+            render: (loginUrl) => <Link to={loginUrl}>{loginUrl} </Link> ?? "-",
         },
         // {
         //     title: "Actions",
@@ -145,7 +140,7 @@ const Contacts = () => {
 
     return (
         <PageContainer
-            title="Contacts"
+            title="Accounts"
         >
             <ProCard>
                 <Flex style={{
@@ -159,7 +154,7 @@ const Contacts = () => {
                         <Table
                             // rowSelection={rowSelection}
                             columns={columns}
-                            dataSource={contacts}
+                            dataSource={allAccounts}
                             loading={loading}
                             // pagination={{
                             //     current: page,
@@ -175,17 +170,16 @@ const Contacts = () => {
                             footer={() => {
                                 return (
                                     <Typography.Text>
-                                        {"Total"}: {contacts.length}
+                                        {"Total"}: {allAccounts.length}
                                     </Typography.Text>
                                 );
                             }}
                         />
                     </Card>
                 </Flex>
-                <AddContacts open={open} handleSubmit={handleSubmit} handleCloseModal={handleCloseModal} isEdit={isEdit} singleData={singleData?.record} index={singleData?.index} />
             </ProCard>
         </PageContainer>
     )
 }
 
-export default Contacts
+export default AllAccounts    

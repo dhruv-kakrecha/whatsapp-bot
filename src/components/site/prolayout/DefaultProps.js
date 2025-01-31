@@ -10,17 +10,12 @@ const menu = {
     path: "/",
     routes: [
       {
-        path: "/",
-        name: "Dashboard",
-        // icon: <SmileFilled />,
-      },
-      {
         path: "/templates",
         name: "Templates",
         // icon: <SmileFilled />,
       },
       {
-        path: "/add-contacts",
+        path: "/contacts",
         name: "Contacts",
         // icon: <SmileFilled />,
       },

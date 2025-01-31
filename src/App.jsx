@@ -3,11 +3,16 @@ import PropTypes from "prop-types";
 import ProLayoutWrapper from "./components/site/prolayout/ProLayout";
 import { Test } from "./Test";
 import { Route, Routes } from "react-router-dom";
-import RichCard from "./components/site/templates/Templates";
 import Contacts from "./components/site/contacts/Contacts";
-import AllAcounts from "./components/site/accounts/AllAcounts";
+import AllTemplates from "./components/site/templates/AllTemplates";
+import AddTemplate from "./components/site/templates/AddTemplate";
+import AllAccounts from "./components/site/accounts/AllAccounts";
+import Login from "./components/site/Login";
+import { useSelector } from "react-redux";
 
 function App() {
+
+  const { isLoggedIn, token } = useSelector(state => state.auth)
   const RouteWrapper = ({ component: Component, ...props }) => {
     RouteWrapper.propTypes = {
       component: PropTypes.elementType.isRequired,
@@ -21,12 +26,20 @@ function App() {
 
   return (
     <>
-      <Routes>
-        <Route exact path="/" element={<RouteWrapper component={Test} />} />
-        <Route exact path="/templates" element={<RouteWrapper component={RichCard} />} />
-        <Route exact path="/add-contacts" element={<RouteWrapper component={Contacts} />} />
-        <Route exact path="/acounts" element={<RouteWrapper component={AllAcounts} />} />
-      </Routes>
+      {isLoggedIn ? (
+        <Routes>
+          <Route exact path="/" element={<RouteWrapper component={AllTemplates} />} />
+          <Route exact path="/templates" element={<RouteWrapper component={AllTemplates} />} />
+          <Route exact path="/templates/add" element={<RouteWrapper component={AddTemplate} />} />
+          <Route exact path="/contacts" element={<RouteWrapper component={Contacts} />} />
+          <Route exact path="/acounts" element={<RouteWrapper component={AllAccounts} />} />
+        </Routes>
+      ) : (
+        <Routes>
+          <Route exact path="/" element={<Login />} />
+          <Route exact path="*" element={<>Not Found</>} />
+        </Routes>
+      )}
     </>
   );
 }
