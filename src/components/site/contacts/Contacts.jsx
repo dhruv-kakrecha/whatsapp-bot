@@ -5,7 +5,6 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { addContacts, editContact } from '../../../redux/contacts/contactSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AddContacts from './AddContacts';
-import ProComponentWrapper from '../ProComponentWrapper';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 
 const Contacts = () => {
