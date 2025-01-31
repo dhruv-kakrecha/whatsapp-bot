@@ -24,69 +24,6 @@ const RichCard = ({
     const [url, setUrl] = useState("")
     const [form] = Form.useForm();
 
-    // const handleCreateTemplate = async () => {
-
-
-    //     try {
-    //         const formData = await form.validateFields();
-
-    //         const payload = {
-    //             "id": "",
-    //             "type": "template",
-    //             "category": "MARKETING",
-    //             "subCategory": "STANDARD",
-    //             "buttonsType": "quick_reply_and_call_to_action",
-    //             "buttons": [
-    //                 {
-    //                     "type": "url",
-    //                     "parameter": {
-    //                         "text": "Visit us",
-    //                         "phoneNumber": "",
-    //                         "url": "https://www.wati.io",
-    //                         "urlType": "static"
-    //                     }
-    //                 },
-    //                 {
-    //                     "type": "call",
-    //                     "parameter": {
-    //                         "text": "Call now",
-    //                         "urlType": "none",
-    //                         "phoneNumber": "919999999999"
-    //                     }
-    //                 },
-    //                 {
-    //                     "type": "quick_reply",
-    //                     "parameter": {
-    //                         "text": "Interested",
-    //                         "urlType": "none"
-    //                     }
-    //                 }
-    //             ],
-    //             "footer": formData.footer,
-    //             "header": {
-    //                 "type": "image",
-    //                 "link": formData.image_url,
-    //                 "mediaFromPC": "",
-    //                 "mediaHeaderId": ""
-    //             },
-    //             "customParams": [],
-    //             "elementName": formData.template_name,
-    //             "body": formData.body,
-    //             "language": "en",
-    //             "client_id": "366983"
-    //         }
-
-    //         axios.post("https://wa-wati-backend.vercel.app/templates/create", payload, {
-    //             headers: {
-    //                 Authorization: `Bearer ${TOKEN}`
-    //             }
-    //         })
-    //     } catch (error) {
-    //         message.error("please fill all fields")
-    //     }
-
-    // }
-
 
     const handleCreateTemplate = async () => {
         try {
