@@ -1,4 +1,4 @@
-import { Button, Card, Col, Flex, Popconfirm, Row, Table, Tooltip, Typography } from 'antd';
+import { Button, Card, Col, Flex, message, Popconfirm, Row, Table, Tooltip, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react'
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
@@ -12,6 +12,9 @@ const AllTemplates = () => {
     // const allTemplates = templateData.result.items
     const [allTemplates, setAllTemplates] = useState([])
     const [loading, setLoading] = useState(false)
+    const [buttonLoading, setButtonLoading] = useState(null)
+    const [sendModalOpen, setSendModalOpen] = useState(false)
+
     const CLIENT_ID = useSelector(state => state.auth.user.tenantId)
     const navigate = useNavigate()
 
@@ -46,6 +49,21 @@ const AllTemplates = () => {
             </Button>,
         ];
     }, [navigate]);
+
+    const handleSendTemplate = async (index, template_name) => {
+        setButtonLoading(index);
+        console.log("send temp", index, template_name);
+        try {
+            const resp = await axiosInstance.post("/messages/send/bulk", { template_name })
+            if (resp.status === 200) {
+                message.success("Templates sent successfully!");
+            }
+        } catch (error) {
+            message.error(error.message);
+        } finally {
+            setButtonLoading(null)
+        }
+    }
 
 
     const columns = [
@@ -85,43 +103,49 @@ const AllTemplates = () => {
                 return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
             }
         },
-        // {
-        //     title: "Actions",
-        //     key: "action",
-        //     fixed: "right",
-        //     width: 100,
-        //     render: (_, record, index) => (
-        //         <Flex gap="small" vertical>
-        //             <Flex wrap gap="small">
-        //                 <Tooltip title={<span style={{ fontSize: "0.8rem" }}>Edit</span>}>
-        //                     <Button
-        //                         size="small"
-        //                         shape="circle"
-        //                         icon={<EditOutlined />}
-        //                     />
-        //                 </Tooltip>
-        //                 <Tooltip
-        //                     color="red"
-        //                     title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}
-        //                 >
-        //                     <Popconfirm
-        //                         key={`confirmation-${record?._id}`}
-        //                         icon={""}
-        //                         description="Are you sure to delete this brand?"
-        //                         onConfirm={() => {
-        //                             handleDeleteBrand(record?._id);
-        //                         }}
-        //                         onCancel={() => { }}
-        //                         okText="Yes"
-        //                         cancelText="No"
-        //                     >
-        //                         <Button size="small" shape="circle" icon={<DeleteOutlined />} />
-        //                     </Popconfirm>
-        //                 </Tooltip>
-        //             </Flex>
-        //         </Flex>
-        //     ),
-        // },
+        {
+            title: "Actions",
+            key: "action",
+            fixed: "right",
+            width: 100,
+            render: (_, record, index) => (
+                <Flex gap="small" vertical>
+                    <Flex wrap gap="small">
+                        <Button
+                            onClick={() => handleSendTemplate(index, record?.elementName)}
+                            loading={buttonLoading === index}
+                        >
+                            {buttonLoading === index ? "Sending" : "Send"}
+                        </Button>
+                        {/* <Tooltip title={<span style={{ fontSize: "0.8rem" }}>Edit</span>}>
+                            <Button
+                                size="small"
+                                shape="circle"
+                                icon={<EditOutlined />}
+                            />
+                        </Tooltip>
+                        <Tooltip
+                            color="red"
+                            title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}
+                        >
+                            <Popconfirm
+                                key={`confirmation-${record?._id}`}
+                                icon={""}
+                                description="Are you sure to delete this brand?"
+                                onConfirm={() => {
+                                    handleDeleteBrand(record?._id);
+                                }}
+                                onCancel={() => { }}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button size="small" shape="circle" icon={<DeleteOutlined />} />
+                            </Popconfirm>
+                        </Tooltip> */}
+                    </Flex>
+                </Flex>
+            ),
+        },
     ];
 
     return (
