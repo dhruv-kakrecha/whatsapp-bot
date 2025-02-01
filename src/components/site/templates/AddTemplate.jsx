@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Input, message, Radio, Row, Space } from "antd";
+import { Button, Col, Flex, Form, Input, message, Radio, Row, Space } from "antd";
 import Buttons from "./Buttons";
-import axios from "axios";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../../axios/axiosInstance";
 
 const AddTemplate = () => {
     const CLIENT_ID = useSelector(state => state.auth.user.tenantId)
@@ -18,7 +18,7 @@ const AddTemplate = () => {
             }
         }
     ])
-
+    // ["quick_reply","call_to_action",] .join("_and_")
     const [url, setUrl] = useState("")
     const [form] = Form.useForm();
 
@@ -34,34 +34,48 @@ const AddTemplate = () => {
     }, [buttons?.length]);
 
 
-    const handleCreateTemplate = async () => {
+    const handleCreateTemplate = async (type) => {
         try {
-            // Validate the form
+            const buttonsType = buttons.reduce((acc, curr) => {
+                if (curr.type === "quick_reply" && !acc.includes(curr.type)) acc.push("quick_reply");
+
+                if ((curr.type === "call" || curr.type === "url") && !acc.includes("call_to_action")) acc.push("call_to_action");
+
+                return acc;
+            }, []).join("_and_");
             const formData = await form.validateFields();
 
             // Create the payload
-            const payload = {
+            let payload = {
                 id: "",
                 type: "template",
                 category: "MARKETING",
                 subCategory: "STANDARD",
-                buttonsType: "quick_reply_and_call_to_action",
+                buttonsType,
                 buttons: buttons,
                 footer: formData.footer,
                 header: { type: "image", link: formData.image_url },
                 elementName: formData.template_name,
                 body: formData.body,
                 language: "en",
-                client_id: CLIENT_ID
             };
 
-            const { data } = await axios.post("https://wa-wati-backend.vercel.app/templates/create", payload);
+            if (type === "single") {
+                payload.client_id = CLIENT_ID
+                const { data } = await axiosInstance.post("https://wa-wati-backend.vercel.app/templates/create", payload);
 
-            if (data.success) {
-                message.success("Template created successfully!");
-                navigate("/templates")
+                if (data.success) {
+                    message.success("Template created successfully!");
+                    navigate("/templates")
+                }
+            } else if (type === "bulk") {
+                const { data } = await axiosInstance.post("https://wa-wati-backend.vercel.app/templates/create/bulk", { template: payload });
+
+                if (data.success) {
+                    message.success("Template created for all accounts!");
+                    navigate("/templates")
+                }
             }
-
         } catch (error) {
             if (error.errorFields) {
                 message.error("Please fill in all required fields.");
@@ -73,10 +87,10 @@ const AddTemplate = () => {
         }
     };
 
-    const handleUpload = ({ file }) => {
-        const fileUrl = URL.createObjectURL(file);
-        setUrl(fileUrl)
-    }
+    // const handleUpload = ({ file }) => {
+    //     const fileUrl = URL.createObjectURL(file);
+    //     setUrl(fileUrl)
+    // }
 
     const handleAddButton = () => {
         if (buttons?.length === 3) {
@@ -241,17 +255,31 @@ const AddTemplate = () => {
                         form={form}
                         maxLength={3}
                     />
+                    <Flex gap={15}>
 
-                    <Button
-                        type="primary"
-                        style={{
-                            padding: "10px 30px",
-                            marginTop: 25,
-                        }}
-                        onClick={handleCreateTemplate}
-                    >
-                        Create
-                    </Button>
+                        <Button
+                            type="primary"
+                            style={{
+                                padding: "10px 30px",
+                                marginTop: 25,
+                            }}
+                            onClick={() => handleCreateTemplate("single")}
+                        >
+                            Create
+                        </Button>
+
+                        <Button
+                            type="primary"
+                            style={{
+                                padding: "10px 30px",
+                                marginTop: 25,
+                            }}
+                            onClick={() => handleCreateTemplate("bulk")}
+                        >
+                            Create For All Accounts
+                        </Button>
+                    </Flex>
+
                 </Form>
             </ProCard>
         </PageContainer>
