@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Input, message, Radio, Row, Space } from "antd";
 import Buttons from "./Buttons";
 import axios from "axios";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-
-
-const AddTemplate = ({
-}) => {
+const AddTemplate = () => {
+    const CLIENT_ID = useSelector(state => state.auth.user.tenantId)
     const navigate = useNavigate()
     const [buttons, setButtons] = useState([
         {
@@ -22,6 +21,17 @@ const AddTemplate = ({
 
     const [url, setUrl] = useState("")
     const [form] = Form.useForm();
+
+    useEffect(() => {
+        const initValues = buttons?.reduce((acc, button, index) => {
+            acc[`button_type_${index}`] = button?.type;
+            acc[`button_title_${index}`] = button?.parameter?.text;
+            acc[`button_phone_${index}`] = button?.parameter?.phoneNumber;
+            acc[`button_url_${index}`] = button?.parameter?.url;
+            return acc;
+        }, {});
+        form.setFieldsValue(initValues);
+    }, [buttons?.length]);
 
 
     const handleCreateTemplate = async () => {
@@ -42,7 +52,7 @@ const AddTemplate = ({
                 elementName: formData.template_name,
                 body: formData.body,
                 language: "en",
-                client_id: "366983"
+                client_id: CLIENT_ID
             };
 
             const { data } = await axios.post("https://wa-wati-backend.vercel.app/templates/create", payload);

@@ -54,7 +54,10 @@ const Contacts = () => {
             const jsonData = XLSX.utils.sheet_to_json(sheet);
 
             // Format data to match desired JSON structure
-            const contacts = jsonData.map(({ phone, countryCode }) => ({ phone, countryCode }));
+            // const contacts = jsonData.map(({ phone, countryCode }) => ({ phone, countryCode }));
+            const contacts = jsonData.map((row) => ({ phone: row.Phone, countryCode: row.CountryCode }));
+
+            console.log("contacts", contacts);
 
             await axiosInstance.post("contacts/add/bulk", { contacts })
 

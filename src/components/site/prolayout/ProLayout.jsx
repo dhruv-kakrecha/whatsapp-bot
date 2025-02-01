@@ -4,8 +4,8 @@ import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } fr
 import { PageContainer, ProCard, ProLayout } from "@ant-design/pro-components";
 import defaultProps from "./DefaultProps";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Avatar, Dropdown } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import { Avatar, Dropdown, Tooltip } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/auth/authSlice";
 
@@ -17,30 +17,6 @@ function ProLayoutWrapper({ children }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
-  // const children = (
-  //   <PageContainer>
-  //     <div
-  //       style={{
-  //         height: "120vh",
-  //         minHeight: 600,
-  //       }}
-  //     >
-  //       {/* <ProFormRadio.Group
-  //         label="按钮的位置"
-  //         options={["header", "menu"].map((value) => ({
-  //           label: value,
-  //           value,
-  //         }))}
-  //         fieldProps={{
-  //           value: position,
-  //           onChange: (e) => setPosition(e.target.value),
-  //         }}
-  //       /> */}
-  //       <h1>Test</h1>
-  //     </div>
-  //   </PageContainer>
-  // );
 
   const props = {
     ...defaultProps,
@@ -69,6 +45,25 @@ function ProLayoutWrapper({ children }) {
       {...props}
       layout="mix"
       onCollapse={setCollapsed}
+      logo={<>WhatsaApp Bot</>}
+      headerTitleRender={(logo, title, _) => {
+        const defaultDom = (
+          <Tooltip arrow={false} title={logo}>
+            <Link to={"/"}>{logo}</Link>
+          </Tooltip>
+        );
+        if (typeof window === "undefined") return defaultDom;
+        if (document.body.clientWidth < 1400) {
+          return defaultDom;
+        }
+        if (_.isMobile) return defaultDom;
+        return (
+          <>
+            {defaultDom}
+            {/* <MenuCard /> */}
+          </>
+        );
+      }}
       avatarProps={{
         src: <Avatar icon={<UserOutlined />} />,
         size: "small",
