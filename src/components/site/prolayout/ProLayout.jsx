@@ -1,16 +1,22 @@
 /* eslint-disable react/prop-types */
 
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from "@ant-design/icons";
 import { PageContainer, ProCard, ProLayout } from "@ant-design/pro-components";
 import defaultProps from "./DefaultProps";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Avatar, Dropdown } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../../redux/auth/authSlice";
 
 function ProLayoutWrapper({ children }) {
   const [pathname, setPathname] = useState("/welcome");
   const [collapsed, setCollapsed] = useState(true);
+  const userName = useSelector(state => state.auth.user.fullName)
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
 
   // const children = (
   //   <PageContainer>
@@ -63,6 +69,32 @@ function ProLayoutWrapper({ children }) {
       {...props}
       layout="mix"
       onCollapse={setCollapsed}
+      avatarProps={{
+        src: <Avatar icon={<UserOutlined />} />,
+        size: "small",
+        title: userName,
+        render: (props, dom) => {
+          return (
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    key: "logout",
+                    icon: <LogoutOutlined />,
+                    label: "Logout",
+                    onClick: () => {
+                      dispatch(logout())
+                      navigate("/");
+                    },
+                  },
+                ],
+              }}
+            >
+              {dom}
+            </Dropdown>
+          );
+        },
+      }}
       headerContentRender={() => {
         return (
           <div

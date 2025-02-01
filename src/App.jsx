@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 
 function App() {
 
-  const { isLoggedIn, token } = useSelector(state => state.auth)
+  const { isLoggedIn } = useSelector(state => state.auth)
   const RouteWrapper = ({ component: Component, ...props }) => {
     RouteWrapper.propTypes = {
       component: PropTypes.elementType.isRequired,

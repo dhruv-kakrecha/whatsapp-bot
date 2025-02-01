@@ -20,7 +20,8 @@ const Login = () => {
             if (data.result.ok) {
                 if (data.result.result) {
                     dispatch(login({
-                        token: data.result.profile.token
+                        token: data.result.profile.token,
+                        user: data.result.profile
                     }))
                     message.success("Login successful");
                 } else {

@@ -1,7 +1,7 @@
-import { Button, Card, Flex, Popconfirm, Table, Tooltip, Typography, Upload } from 'antd';
+import { Button, Card, Flex, message, Popconfirm, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { DeleteOutlined, EditOutlined, ImportOutlined } from '@ant-design/icons';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TableActions from '../../common/TableActions';
 import * as XLSX from "xlsx";
 import axiosInstance from '../../../axios/axiosInstance';
@@ -12,7 +12,23 @@ import { Link } from 'react-router-dom';
 const AllAccounts = () => {
 
     const [loading, setLoading] = useState(false);
-    const allAccounts = accountsData
+    const [allAccounts, setAllAccounts] = useState([{}]);
+
+    const getAccountData = async () => {
+        setLoading(true);
+        try {
+            const { data } = await axiosInstance.get("accounts/all");
+            setAllAccounts(data?.accounts);
+            setLoading(false);
+        } catch (error) {
+            message.error(error.message);
+        }
+
+    }
+
+    useEffect(() => {
+        getAccountData();
+    }, [])
 
 
     const handleUpload = async (file) => {
@@ -39,9 +55,9 @@ const AllAccounts = () => {
 
             console.log("accounts", accounts);
 
-
-            const { data } = await axiosInstance.post("accounts/add/bulk", { accounts })
-
+            await axiosInstance.post("accounts/add/bulk", { accounts })
+            message.success("accounts added successfully")
+            getAccountData()
         };
 
         reader.readAsBinaryString(file);
@@ -156,6 +172,9 @@ const AllAccounts = () => {
                             columns={columns}
                             dataSource={allAccounts}
                             loading={loading}
+                            scroll={{
+                                x: 1200,
+                            }}
                             // pagination={{
                             //     current: page,
                             //     total: templatesTotal,

@@ -1,7 +1,7 @@
-import { Button, Card, Flex, Popconfirm, Table, Tooltip, Typography, Upload } from 'antd';
+import { Button, Card, Flex, message, Popconfirm, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { DeleteOutlined, EditOutlined, ImportOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AddContacts from './AddContacts';
 import TableActions from '../../common/TableActions';
 import * as XLSX from "xlsx";
@@ -10,11 +10,28 @@ import axiosInstance from '../../../axios/axiosInstance';
 
 const Contacts = () => {
 
-    const [loading, setLoading] = useState(false);
     const [contacts, setContacts] = useState([{}]);
+    const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [singleData, setSingleData] = useState({});
+
+
+    const getContactsData = async () => {
+        setLoading(true);
+        try {
+            const { data } = await axiosInstance.get("/contacts/all")
+            setContacts(data?.contacts);
+        } catch (error) {
+            message.error(error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        getContactsData()
+    }, [])
 
 
     const handleUpload = async (file) => {
@@ -39,8 +56,10 @@ const Contacts = () => {
             // Format data to match desired JSON structure
             const contacts = jsonData.map(({ phone, countryCode }) => ({ phone, countryCode }));
 
-            const { data } = await axiosInstance.post("contacts/add/bulk", { contacts })
+            await axiosInstance.post("contacts/add/bulk", { contacts })
 
+            message.success("Contact added successfully!");
+            getContactsData()
         };
 
         reader.readAsBinaryString(file);
@@ -48,7 +67,9 @@ const Contacts = () => {
     };
 
     const handleSubmit = async (newValue) => {
-        const { data } = await axiosInstance.post("contacts/add/single", newValue);
+        await axiosInstance.post("contacts/add/single", newValue);
+        message.success("Contacts added successfully!");
+        getContactsData()
     }
 
     const tableButtons = [
@@ -158,9 +179,13 @@ const Contacts = () => {
                     <Card>
                         <Table
                             // rowSelection={rowSelection}
+                            loading={loading}
                             columns={columns}
                             dataSource={contacts}
-                            loading={loading}
+                            scroll={{
+                                x: 1200,
+                            }}
+                            // loading={loading}
                             // pagination={{
                             //     current: page,
                             //     total: templatesTotal,
