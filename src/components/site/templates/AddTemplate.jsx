@@ -37,12 +37,14 @@ const AddTemplate = () => {
     const handleCreateTemplate = async (type) => {
         try {
             const buttonsType = buttons.reduce((acc, curr) => {
-                if (curr.type === "quick_reply" && !acc.includes(curr.type)) acc.push("quick_reply");
+                if (curr.type === "quick_reply" && !acc.includes("quick_reply")) acc.push("quick_reply");
 
                 if ((curr.type === "call" || curr.type === "url") && !acc.includes("call_to_action")) acc.push("call_to_action");
 
                 return acc;
-            }, []).join("_and_");
+            }, [])
+                .sort((a, b) => a === "quick_reply" ? -1 : 1)
+                .join("_and_");
             const formData = await form.validateFields();
 
             // Create the payload
