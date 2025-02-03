@@ -24,6 +24,12 @@ const menu = {
         name: "Acounts",
         // icon: <SmileFilled />,
       },
+      {
+        path: "/campaign",
+        name: "Campaign",
+        // icon: <SmileFilled />,
+      },
+      
     ],
   },
   location: {

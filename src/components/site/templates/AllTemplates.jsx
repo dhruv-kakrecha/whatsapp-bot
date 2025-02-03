@@ -12,8 +12,7 @@ const AllTemplates = () => {
     // const allTemplates = templateData.result.items
     const [allTemplates, setAllTemplates] = useState([])
     const [loading, setLoading] = useState(false)
-    const [buttonLoading, setButtonLoading] = useState(null)
-    const [sendModalOpen, setSendModalOpen] = useState(false)
+    const [selectedRows, setSelectedRows] = useState([]);
 
     const CLIENT_ID = useSelector(state => state.auth.user.tenantId)
     const navigate = useNavigate()
@@ -50,22 +49,17 @@ const AllTemplates = () => {
         ];
     }, [navigate]);
 
-    const handleSendTemplate = async (index, template_name) => {
-        setButtonLoading(index);
-        console.log("send temp", index, template_name);
-        try {
-            const resp = await axiosInstance.post("/messages/send/bulk", { template_name })
-            if (resp.status === 200) {
-                message.success("Templates sent successfully!");
-            }
-        } catch (error) {
-            message.error(error.message);
-        } finally {
-            setButtonLoading(null)
-        }
-    }
-
-
+    const rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+            setSelectedRows(selectedRows)
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        },
+        getCheckboxProps: (record) => ({
+            disabled: record.name === 'Disabled User',
+            // Column configuration not to be checked
+            name: record.name,
+        }),
+    };
     const columns = [
         {
             title: "SN",
@@ -164,7 +158,7 @@ const AllTemplates = () => {
 
                     <Card>
                         <Table
-                            // rowSelection={rowSelection}
+                            rowSelection={rowSelection}
                             loading={loading}
                             columns={columns}
                             dataSource={allTemplates}
@@ -181,12 +175,17 @@ const AllTemplates = () => {
                             //         setPageSize(pageSize);
                             //     },
                             // }}
-                            rowKey={(record) => record._id}
+                            rowKey={(record) => record?.id}
                             footer={() => {
                                 return (
-                                    <Typography.Text>
-                                        {"Total"}: {allTemplates?.length}
-                                    </Typography.Text>
+                                    <Row >
+                                        <Typography.Text style={{ marginRight: 10 }}>
+                                            {"Total"}: {allTemplates.length}
+                                        </Typography.Text>
+                                        <Typography.Text>
+                                            {"Selected"}: {selectedRows.length}
+                                        </Typography.Text>
+                                    </Row>
                                 );
                             }}
                         />
