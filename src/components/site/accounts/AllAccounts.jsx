@@ -1,4 +1,4 @@
-import { Button, Card, Flex, message, Popconfirm, Table, Tooltip, Typography, Upload } from 'antd';
+import { Button, Card, Flex, message, Popconfirm, Row, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { DeleteOutlined, EditOutlined, ImportOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
@@ -13,6 +13,7 @@ const AllAccounts = () => {
 
     const [loading, setLoading] = useState(false);
     const [allAccounts, setAllAccounts] = useState([{}]);
+    const [selectedRows, setSelectedRows] = useState([]);
 
     const getAccountData = async () => {
         setLoading(true);
@@ -62,6 +63,17 @@ const AllAccounts = () => {
 
         reader.readAsBinaryString(file);
         return false;
+    };
+    const rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+            setSelectedRows(selectedRows)
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        },
+        getCheckboxProps: (record) => ({
+            disabled: record.name === 'Disabled User',
+            // Column configuration not to be checked
+            name: record.name,
+        }),
     };
 
     const tableButtons = [
@@ -168,7 +180,7 @@ const AllAccounts = () => {
 
                     <Card>
                         <Table
-                            // rowSelection={rowSelection}
+                            rowSelection={rowSelection}
                             columns={columns}
                             dataSource={allAccounts}
                             loading={loading}
@@ -188,9 +200,14 @@ const AllAccounts = () => {
                             rowKey={(record) => record._id}
                             footer={() => {
                                 return (
-                                    <Typography.Text>
+                                    <Row >
+                                    <Typography.Text style={{marginRight:10}}>
                                         {"Total"}: {allAccounts.length}
                                     </Typography.Text>
+                                    <Typography.Text>
+                                        {"Selected"}: {selectedRows.length}
+                                    </Typography.Text>
+                                </Row>
                                 );
                             }}
                         />

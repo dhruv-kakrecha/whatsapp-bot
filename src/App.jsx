@@ -9,6 +9,7 @@ import AddTemplate from "./components/site/templates/AddTemplate";
 import AllAccounts from "./components/site/accounts/AllAccounts";
 import Login from "./components/site/Login";
 import { useSelector } from "react-redux";
+import Campaign from "./components/site/Campaign/campaign";
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
           <Route exact path="/templates/add" element={<RouteWrapper component={AddTemplate} />} />
           <Route exact path="/contacts" element={<RouteWrapper component={Contacts} />} />
           <Route exact path="/acounts" element={<RouteWrapper component={AllAccounts} />} />
+          <Route exact path="/campaign" element={<RouteWrapper component={Campaign} />} />
         </Routes>
       ) : (
         <Routes>

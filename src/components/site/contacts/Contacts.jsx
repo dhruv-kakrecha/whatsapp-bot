@@ -1,4 +1,4 @@
-import { Button, Card, Flex, message, Popconfirm, Table, Tooltip, Typography, Upload } from 'antd';
+import { Button, Card, Flex, message, Popconfirm, Row, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { DeleteOutlined, EditOutlined, ImportOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
@@ -15,6 +15,7 @@ const Contacts = () => {
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [singleData, setSingleData] = useState({});
+    const [selectedRows, setSelectedRows] = useState([]);
 
 
     const getContactsData = async () => {
@@ -94,6 +95,18 @@ const Contacts = () => {
         setIsEdit(false)
         setSingleData({})
     }
+
+    const rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+            setSelectedRows(selectedRows)
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        },
+        getCheckboxProps: (record) => ({
+            disabled: record.name === 'Disabled User',
+            // Column configuration not to be checked
+            name: record.name,
+        }),
+    };
 
     const columns = [
         {
@@ -178,7 +191,7 @@ const Contacts = () => {
 
                     <Card>
                         <Table
-                            // rowSelection={rowSelection}
+                            rowSelection={rowSelection}
                             loading={loading}
                             columns={columns}
                             dataSource={contacts}
@@ -199,9 +212,14 @@ const Contacts = () => {
                             rowKey={(record) => record._id}
                             footer={() => {
                                 return (
-                                    <Typography.Text>
-                                        {"Total"}: {contacts.length}
-                                    </Typography.Text>
+                                    <Row >
+                                        <Typography.Text style={{marginRight:10}}>
+                                            {"Total"}: {contacts.length}
+                                        </Typography.Text>
+                                        <Typography.Text>
+                                            {"Selected"}: {selectedRows.length}
+                                        </Typography.Text>
+                                    </Row>
                                 );
                             }}
                         />
