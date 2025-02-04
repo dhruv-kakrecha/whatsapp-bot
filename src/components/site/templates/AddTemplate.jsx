@@ -270,30 +270,8 @@ const AddTemplate = () => {
                         form={form}
                         maxLength={3}
                     />
-                    <Flex gap={15} style={{ marginTop: 25, }}>
-
-                        <Button
-                            type="primary"
-                            style={{
-                                padding: "10px 30px",
-
-                            }}
-                            onClick={() => handleCreateTemplate("single")}
-                        >
-                            Create
-                        </Button>
-
-                        <Button
-                            type="primary"
-                            style={{
-                                padding: "10px 30px",
-                            }}
-                            onClick={() => handleCreateTemplate("bulk")}
-                        >
-                            Create For All Accounts
-                        </Button>
-                        {/* <div style={{ width: '100%' }}> */}
-                        <Form.Item
+                    <Flex gap={15} style={{ marginTop: 25, }} justify="flex-end">
+                    <Form.Item
                             // style={{ marginBottom: "15px" }}
                             name={"start account number"}
                             // label={"Start Account Number"}
@@ -323,7 +301,28 @@ const AddTemplate = () => {
                         >
                             <Input size="default size" onChange={(e) => { endAccountNumber(e) }} type="number" style={{ width: '100%' }} placeholder="End Account Number" />
                         </Form.Item>
-                        {/* </div> */}
+
+                        <Button
+                            type="primary"
+                            style={{
+                                padding: "10px 30px",
+
+                            }}
+                            onClick={() => handleCreateTemplate("single")}
+                        >
+                            Create
+                        </Button>
+
+                        <Button
+                            type="primary"
+                            style={{
+                                padding: "10px 30px",
+                            }}
+                            onClick={() => handleCreateTemplate("bulk")}
+                        >
+                            Create For All Accounts
+                        </Button>
+                        
                     </Flex>
 
                 </Form>
