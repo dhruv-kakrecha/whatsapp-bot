@@ -8,7 +8,11 @@ import * as XLSX from "xlsx";
 import axiosInstance from '../../../axios/axiosInstance';
 
 
-const Contacts = () => {
+const Contacts = ({
+    showSelect,
+    selectedContacts,
+    setSelectedContacts
+}) => {
 
     const [contacts, setContacts] = useState([{}]);
     const [loading, setLoading] = useState(false);
@@ -100,13 +104,14 @@ const Contacts = () => {
     }
 
     const rowSelection = {
+        selectedRowKeys: selectedContacts,
         onChange: (selectedRowKeys, selectedRows) => {
-            setSelectedRows(selectedRows)
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            setSelectedRows(selectedRowKeys)
+            setSelectedContacts(selectedRows.map(({ phone, countryCode }) => countryCode + phone))
+            console.log("selectedRowKeys", selectedRowKeys);
         },
         getCheckboxProps: (record) => ({
             disabled: record.name === 'Disabled User',
-            // Column configuration not to be checked
             name: record.name,
         }),
     };
@@ -194,12 +199,12 @@ const Contacts = () => {
 
                     <Card>
                         <Table
-                            rowSelection={rowSelection}
+                            rowSelection={showSelect && rowSelection}
                             loading={loading}
                             columns={columns}
                             dataSource={contacts}
                             scroll={{
-                                x: 1200,
+                                x: 500,
                             }}
                             // loading={loading}
                             // pagination={{
@@ -212,15 +217,15 @@ const Contacts = () => {
                             //         setPageSize(pageSize);
                             //     },
                             // }}
-                            rowKey={(record) => record._id}
+                            rowKey={({ phone, countryCode }) => countryCode + phone}
                             footer={() => {
                                 return (
                                     <Row >
-                                        <Typography.Text style={{marginRight:10}}>
-                                            {"Total"}: {contacts.length}
+                                        <Typography.Text style={{ marginRight: 10 }}>
+                                            {"Total"}: <b>{contacts.length}</b>
                                         </Typography.Text>
                                         <Typography.Text>
-                                            {"Selected"}: {selectedRows.length}
+                                            {showSelect && <>Selected : <b>{selectedContacts.length}</b></>}
                                         </Typography.Text>
                                     </Row>
                                 );

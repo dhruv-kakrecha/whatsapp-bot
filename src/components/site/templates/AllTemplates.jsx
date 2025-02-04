@@ -1,4 +1,4 @@
-import { Button, Card, Col, Flex, message, Popconfirm, Row, Table, Tooltip, Typography } from 'antd';
+import { Button, Card, Col, Flex, message, Popconfirm, Radio, Row, Table, Tooltip, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react'
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
@@ -7,14 +7,26 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../../../axios/axiosInstance';
 
-const AllTemplates = () => {
+const AllTemplates = ({
+    showSelect,
+    selectedTemplate,
+    setSelectedTemplate,
+}) => {
 
     // const allTemplates = templateData.result.items
     const [allTemplates, setAllTemplates] = useState([])
     const [loading, setLoading] = useState(false)
     const [selectedRows, setSelectedRows] = useState([]);
+    const [pagination, setPagination] = useState({
+        current: 1,
+        pageSize: 10,
+    });
 
-    const CLIENT_ID = useSelector(state => state.auth.user.tenantId)
+    const handleTableChange = (pagination) => {
+        setPagination(pagination);
+    };
+
+    const CLIENT_ID = useSelector(state => state?.auth?.user?.tenantId)
     const navigate = useNavigate()
 
     const getTemplatesData = async () => {
@@ -27,7 +39,6 @@ const AllTemplates = () => {
         } finally {
             setLoading(false);
         }
-
     }
 
     useEffect(() => {
@@ -49,22 +60,19 @@ const AllTemplates = () => {
         ];
     }, [navigate]);
 
-    const rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            setSelectedRows(selectedRows)
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        },
-        getCheckboxProps: (record) => ({
-            disabled: record.name === 'Disabled User',
-            // Column configuration not to be checked
-            name: record.name,
-        }),
-    };
     const columns = [
         {
             title: "SN",
             width: 60,
-            render: (text, record, index) => index + 1,
+            render: (text, { _id, elementName }, index) => {
+                return (showSelect ? <Radio
+                    checked={selectedTemplate === elementName}
+                    onChange={() => setSelectedTemplate(elementName)}
+                    id={_id}
+                >
+                    {pagination.pageSize * (pagination.current - 1) + (index + 1)}
+                </Radio> : <>{pagination.pageSize * (pagination.current - 1) + (index + 1)}</>)
+            },
         },
         {
             title: 'Name',
@@ -97,49 +105,6 @@ const AllTemplates = () => {
                 return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
             }
         },
-        {
-            title: "Actions",
-            key: "action",
-            fixed: "right",
-            width: 100,
-            render: (_, record, index) => (
-                <Flex gap="small" vertical>
-                    <Flex wrap gap="small">
-                        <Button
-                            onClick={() => handleSendTemplate(index, record?.elementName)}
-                            loading={buttonLoading === index}
-                        >
-                            {buttonLoading === index ? "Sending" : "Send"}
-                        </Button>
-                        {/* <Tooltip title={<span style={{ fontSize: "0.8rem" }}>Edit</span>}>
-                            <Button
-                                size="small"
-                                shape="circle"
-                                icon={<EditOutlined />}
-                            />
-                        </Tooltip>
-                        <Tooltip
-                            color="red"
-                            title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}
-                        >
-                            <Popconfirm
-                                key={`confirmation-${record?._id}`}
-                                icon={""}
-                                description="Are you sure to delete this brand?"
-                                onConfirm={() => {
-                                    handleDeleteBrand(record?._id);
-                                }}
-                                onCancel={() => { }}
-                                okText="Yes"
-                                cancelText="No"
-                            >
-                                <Button size="small" shape="circle" icon={<DeleteOutlined />} />
-                            </Popconfirm>
-                        </Tooltip> */}
-                    </Flex>
-                </Flex>
-            ),
-        },
     ];
 
     return (
@@ -158,7 +123,6 @@ const AllTemplates = () => {
 
                     <Card>
                         <Table
-                            rowSelection={rowSelection}
                             loading={loading}
                             columns={columns}
                             dataSource={allTemplates}
@@ -175,15 +139,24 @@ const AllTemplates = () => {
                             //         setPageSize(pageSize);
                             //     },
                             // }}
+                            pagination={{
+                                current: pagination.current,
+                                pageSize: pagination.pageSize,
+                                total: allTemplates.length,
+                                showSizeChanger: true,
+                                onChange: (page, pageSize) => {
+                                    setPagination({ current: page, pageSize });
+                                },
+                            }}
                             rowKey={(record) => record?.id}
                             footer={() => {
                                 return (
                                     <Row >
                                         <Typography.Text style={{ marginRight: 10 }}>
-                                            {"Total"}: {allTemplates.length}
+                                            {"Total"}: <b>{allTemplates.length}</b>
                                         </Typography.Text>
                                         <Typography.Text>
-                                            {"Selected"}: {selectedRows.length}
+                                            {"Selected"}: <b>{selectedTemplate}</b>
                                         </Typography.Text>
                                     </Row>
                                 );

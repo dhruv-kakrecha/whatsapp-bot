@@ -10,6 +10,11 @@ const menu = {
     path: "/",
     routes: [
       {
+        path: "/acounts",
+        name: "Acounts",
+        // icon: <SmileFilled />,
+      },
+      {
         path: "/templates",
         name: "Templates",
         // icon: <SmileFilled />,
@@ -19,11 +24,7 @@ const menu = {
         name: "Contacts",
         // icon: <SmileFilled />,
       },
-      {
-        path: "/acounts",
-        name: "Acounts",
-        // icon: <SmileFilled />,
-      },
+     
       {
         path: "/campaign",
         name: "Campaign",

@@ -5,15 +5,17 @@ import React, { useEffect, useState } from 'react'
 import TableActions from '../../common/TableActions';
 import * as XLSX from "xlsx";
 import axiosInstance from '../../../axios/axiosInstance';
-import { accountsData } from '../../../../dummyData/data';
 import { Link } from 'react-router-dom';
 
 
-const AllAccounts = () => {
+const AllAccounts = ({
+    showSelect,
+    selectedAccounts,
+    setSelectedAccounts
+}) => {
 
     const [loading, setLoading] = useState(false);
     const [allAccounts, setAllAccounts] = useState([{}]);
-    const [selectedRows, setSelectedRows] = useState([]);
 
     const getAccountData = async () => {
         setLoading(true);
@@ -64,14 +66,14 @@ const AllAccounts = () => {
         reader.readAsBinaryString(file);
         return false;
     };
+
     const rowSelection = {
+        selectedRowKeys: selectedAccounts,
         onChange: (selectedRowKeys, selectedRows) => {
-            setSelectedRows(selectedRows)
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            setSelectedAccounts(selectedRows.map(({ _id }) => _id))
         },
         getCheckboxProps: (record) => ({
             disabled: record.name === 'Disabled User',
-            // Column configuration not to be checked
             name: record.name,
         }),
     };
@@ -122,48 +124,6 @@ const AllAccounts = () => {
             key: 'loginUrl',
             render: (loginUrl) => <Link to={loginUrl}>{loginUrl} </Link> ?? "-",
         },
-        // {
-        //     title: "Actions",
-        //     key: "action",
-        //     fixed: "right",
-        //     width: 100,
-        //     render: (_, record, index) => (
-        //         <Flex gap="small" vertical>
-        //             <Flex wrap gap="small">
-        //                 <Tooltip title={<span style={{ fontSize: "0.8rem" }}>Edit</span>}>
-        //                     <Button
-        //                         onClick={() => {
-        //                             setIsEdit(true)
-        //                             setOpen(true)
-        //                             setSingleData({ index, record })
-        //                         }}
-        //                         size="small"
-        //                         shape="circle"
-        //                         icon={<EditOutlined />}
-        //                     />
-        //                 </Tooltip>
-        //                 <Tooltip
-        //                     color="red"
-        //                     title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}
-        //                 >
-        //                     <Popconfirm
-        //                         key={`confirmation-${record?._id}`}
-        //                         icon={""}
-        //                         description="Are you sure to delete this brand?"
-        //                         onConfirm={() => {
-        //                             handleDeleteBrand(record?._id);
-        //                         }}
-        //                         onCancel={() => { }}
-        //                         okText="Yes"
-        //                         cancelText="No"
-        //                     >
-        //                         <Button size="small" shape="circle" icon={<DeleteOutlined />} />
-        //                     </Popconfirm>
-        //                 </Tooltip>
-        //             </Flex>
-        //         </Flex>
-        //     ),
-        // },
     ];
 
     return (
@@ -180,7 +140,7 @@ const AllAccounts = () => {
 
                     <Card>
                         <Table
-                            rowSelection={rowSelection}
+                            rowSelection={showSelect && rowSelection}
                             columns={columns}
                             dataSource={allAccounts}
                             loading={loading}
@@ -201,13 +161,13 @@ const AllAccounts = () => {
                             footer={() => {
                                 return (
                                     <Row >
-                                    <Typography.Text style={{marginRight:10}}>
-                                        {"Total"}: {allAccounts.length}
-                                    </Typography.Text>
-                                    <Typography.Text>
-                                        {"Selected"}: {selectedRows.length}
-                                    </Typography.Text>
-                                </Row>
+                                        <Typography.Text style={{ marginRight: 10 }}>
+                                            Total: <b>{allAccounts?.length}</b>
+                                        </Typography.Text>
+                                        <Typography.Text>
+                                            Selected: <b>{selectedAccounts?.length}</b>
+                                        </Typography.Text>
+                                    </Row>
                                 );
                             }}
                         />
