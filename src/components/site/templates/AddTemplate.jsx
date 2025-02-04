@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios/axiosInstance";
 
 const AddTemplate = () => {
+
     const CLIENT_ID = useSelector(state => state.auth.user.tenantId)
     const navigate = useNavigate()
     const [buttons, setButtons] = useState([
@@ -20,6 +21,9 @@ const AddTemplate = () => {
     ])
     // ["quick_reply","call_to_action",] .join("_and_")
     const [url, setUrl] = useState("")
+    const [startAccountIndex, setStartAccountIndex] = useState(null)
+    const [endAccountIndex, setEndAccountIndex] = useState(null)
+
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -71,7 +75,7 @@ const AddTemplate = () => {
                     navigate("/templates")
                 }
             } else if (type === "bulk") {
-                const { data } = await axiosInstance.post("https://wa-wati-backend.vercel.app/templates/create/bulk", { template: payload });
+                const { data } = await axiosInstance.post("https://wa-wati-backend.vercel.app/templates/create/bulk", { template: payload, "startAccountIndex": startAccountIndex, "endAccountIndex": endAccountIndex });
 
                 if (data.success) {
                     message.success("Template created for all accounts!");
@@ -135,6 +139,15 @@ const AddTemplate = () => {
         setButtons(updatedButtons);
     };
 
+    const startAccountNumber = (e) => {
+        console.log("start", e.target.value)
+        setStartAccountIndex(e.target.value)
+    }
+    const endAccountNumber = (e) => {
+        console.log("end", e.target.value)
+        setEndAccountIndex(e.target.value)
+    }
+
     return (
         <PageContainer
             title="Create template"
@@ -156,7 +169,7 @@ const AddTemplate = () => {
                                         {
                                             required: true,
                                             type: "string",
-                                            message: "Please enter title",
+                                            message: "Please enter template name",
                                         },
                                         { max: 25, message: "Title must be within 25 characters" },
                                     ]}
@@ -181,7 +194,7 @@ const AddTemplate = () => {
                                         {
                                             required: true,
                                             type: "string",
-                                            message: "Please enter title",
+                                            message: "Please enter valid url",
                                         },
                                     ]}
                                 >
@@ -205,7 +218,7 @@ const AddTemplate = () => {
                                         {
                                             required: true,
                                             type: "string",
-                                            message: "Please enter title",
+                                            message: "Please enter footer",
                                         },
                                         { max: 25, message: "Title must be within 25 characters" },
                                     ]}
@@ -257,13 +270,13 @@ const AddTemplate = () => {
                         form={form}
                         maxLength={3}
                     />
-                    <Flex gap={15}>
+                    <Flex gap={15} style={{ marginTop: 25, }}>
 
                         <Button
                             type="primary"
                             style={{
                                 padding: "10px 30px",
-                                marginTop: 25,
+
                             }}
                             onClick={() => handleCreateTemplate("single")}
                         >
@@ -274,12 +287,43 @@ const AddTemplate = () => {
                             type="primary"
                             style={{
                                 padding: "10px 30px",
-                                marginTop: 25,
                             }}
                             onClick={() => handleCreateTemplate("bulk")}
                         >
                             Create For All Accounts
                         </Button>
+                        {/* <div style={{ width: '100%' }}> */}
+                        <Form.Item
+                            // style={{ marginBottom: "15px" }}
+                            name={"start account number"}
+                            // label={"Start Account Number"}
+                            rules={[
+                                {
+                                    required: true,
+                                    type: "string",
+                                    message: "Please enter start account number",
+                                },
+                                { max: 25, message: "Title must be within 25 characters" },
+                            ]}
+                        >
+                            <Input size="default size" onChange={(e) => { startAccountNumber(e) }} type="number" style={{ width: '100%' }} placeholder="Start Account Number" />
+                        </Form.Item>
+                        <Form.Item
+                            // style={{ marginBottom: "15px" }}
+                            name={"end account number"}
+                            // label={"End Account Number"}
+                            rules={[
+                                {
+                                    required: true,
+                                    type: "string",
+                                    message: "Please enter end account number",
+                                },
+                                { max: 25, message: "Title must be within 25 characters" },
+                            ]}
+                        >
+                            <Input size="default size" onChange={(e) => { endAccountNumber(e) }} type="number" style={{ width: '100%' }} placeholder="End Account Number" />
+                        </Form.Item>
+                        {/* </div> */}
                     </Flex>
 
                 </Form>
