@@ -11,11 +11,11 @@ const BasicConfiguration = ({
     return (
         <Card title="Basic Configuration">
             <Form layout="vertical">
-
                 <Form.Item
                     label="Campaign Name"
                     name="name"
                     required
+                    initialValue={campaignName}
                 >
                     <Input value={campaignName} onChange={(e) => setCampaignName(e.target.value)} placeholder="Campaign Name" />
                 </Form.Item>
@@ -24,8 +24,9 @@ const BasicConfiguration = ({
                     label="Messages Per Account"
                     name="messages"
                     required
+                    initialValue={messagesPerAccount}
                 >
-                    <Input value={messagesPerAccount} onChange={(e) => setMessagesPerAccount(e.target.value)} placeholder="Messages Per Account" />
+                    <Input type='number' value={messagesPerAccount} onChange={(e) => setMessagesPerAccount(e.target.value)} placeholder="Messages Per Account" />
                 </Form.Item>
 
             </Form>

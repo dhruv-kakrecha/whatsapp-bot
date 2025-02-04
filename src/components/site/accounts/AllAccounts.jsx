@@ -1,6 +1,6 @@
-import { Button, Card, Flex, message, Popconfirm, Row, Table, Tooltip, Typography, Upload } from 'antd';
+import { Button, Card, Flex, Form, Input, message, Modal, Popconfirm, Row, Select, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { DeleteOutlined, EditOutlined, ImportOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, FilterOutlined, ImportOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import TableActions from '../../common/TableActions';
 import * as XLSX from "xlsx";
@@ -15,12 +15,17 @@ const AllAccounts = ({
 }) => {
 
     const [loading, setLoading] = useState(false);
+    const [filterModal, setFilterModal] = useState(false);
+    const [filters, setFilters] = useState({
+        account_status: "CONNECTED",
+        quality_rating: "GREEN"
+    })
     const [allAccounts, setAllAccounts] = useState([{}]);
 
-    const getAccountData = async () => {
+    const getAccountData = async (query) => {
         setLoading(true);
         try {
-            const { data } = await axiosInstance.get("accounts/all");
+            const { data } = await axiosInstance.get(`accounts/all?account_status=${query.account_status}&quality_rating=${query.quality_rating}`);
             setAllAccounts(data?.accounts);
             setLoading(false);
         } catch (error) {
@@ -30,7 +35,7 @@ const AllAccounts = ({
     }
 
     useEffect(() => {
-        getAccountData();
+        getAccountData(filters);
     }, [])
 
 
@@ -79,6 +84,9 @@ const AllAccounts = ({
     };
 
     const tableButtons = [
+        <Button onClick={() => setFilterModal(true)} icon={<FilterOutlined />}>
+            Filters
+        </Button>,
         <Upload
             key={"import"}
             beforeUpload={handleUpload}
@@ -165,7 +173,7 @@ const AllAccounts = ({
                                             Total: <b>{allAccounts?.length}</b>
                                         </Typography.Text>
                                         <Typography.Text>
-                                            Selected: <b>{selectedAccounts?.length}</b>
+                                            {showSelect && <>Selected: <b>{selectedAccounts?.length}</b></>}
                                         </Typography.Text>
                                     </Row>
                                 );
@@ -173,6 +181,54 @@ const AllAccounts = ({
                         />
                     </Card>
                 </Flex>
+
+                <Modal
+                    title="Apply Filters"
+                    centered
+                    open={filterModal}
+                    onOk={() => {
+                        getAccountData(filters);
+                        setFilterModal(false);
+                    }}
+                    onCancel={() => setFilterModal(false)}
+                    okText="Apply"
+                    cancelText="Cancel"
+                >
+                    <Form layout="vertical">
+                        <Form.Item
+                            label="Filter by Account Status"
+                            initialValue={filters.account_status}
+                        >
+                            <Select
+                                value={filters.account_status}
+                                onChange={(value) => setFilters(prev => ({ ...prev, account_status: value }))}
+                                style={{ width: "100%" }}
+                                options={[
+                                    { label: "CONNECTED", value: "CONNECTED" },
+                                    { label: "BANNED", value: "BANNED" },
+                                    { label: "FLAG", value: "FLAG" },
+                                ]}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Quality Rating"
+                            initialValue={filters.quality_rating}
+                        >
+                            <Select
+                                value={filters.quality_rating}
+                                onChange={(value) => setFilters(prev => ({ ...prev, quality_rating: value }))}
+                                style={{ width: "100%" }}
+                                options={[
+                                    { label: "GREEN", value: "GREEN" },
+                                    { label: "MEDIUM", value: "MEDIUM" },
+                                    { label: "LOW", value: "LOW" },
+                                ]}
+                            />
+                        </Form.Item>
+
+                    </Form>
+                </Modal>
             </ProCard>
         </PageContainer>
     )

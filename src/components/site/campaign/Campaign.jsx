@@ -59,7 +59,7 @@ const Campaign = () => {
   ];
 
   const next = () => {
-    if (current === 0 && !campaignName && !messagesPerAccount) {
+    if (current === 0 && (!campaignName || !messagesPerAccount)) {
       message.warning("please fill all the fields")
     } else if (current === 1 && selectedAccounts.length === 0) {
       message.warning("Please select atleast one account!");
