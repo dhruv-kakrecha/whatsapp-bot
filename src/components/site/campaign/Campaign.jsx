@@ -5,6 +5,7 @@ import Contacts from "../contacts/Contacts";
 import { Button, Card, message, Steps } from "antd";
 import BasicConfiguration from "./BasicConfiguration";
 import axiosInstance from "../../../axios/axiosInstance";
+import { PageContainer, ProCard } from "@ant-design/pro-components";
 
 const Campaign = () => {
 
@@ -99,26 +100,34 @@ const Campaign = () => {
   }
 
   return (
-    <Card>
-      <Steps current={current} items={steps.map((item) => ({ key: item.title, title: item.title }))} />
-      <div style={{ marginTop: 24 }}>{steps[current].content}</div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
-        {current > 0 && (
-          <Button style={{ marginRight: 8 }} onClick={prev}>
-            Back
-          </Button>
-        )}
-        {current < steps.length - 1 ? (
-          <Button type="primary" onClick={next}>
-            Next
-          </Button>
-        ) : (
-          <Button type="primary" onClick={handleSendMessage}>
-            Send Message
-          </Button>
-        )}
-      </div>
-    </Card>
+    // <Card>
+    <PageContainer
+      title="Campaign"
+    >
+
+      <ProCard>
+        <Steps current={current} items={steps.map((item) => ({ key: item.title, title: item.title }))} />
+        <div style={{ marginTop: 24 }}>{steps[current].content}</div>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
+          {current > 0 && (
+            <Button style={{ marginRight: 8 }} onClick={prev}>
+              Back
+            </Button>
+          )}
+          {current < steps.length - 1 ? (
+            <Button type="primary" onClick={next}>
+              Next
+            </Button>
+          ) : (
+            <Button type="primary" onClick={handleSendMessage}>
+              Send Message
+            </Button>
+          )}
+        </div>
+      </ProCard>
+    </PageContainer>
+
+    // </Card>
   );
 };
 
