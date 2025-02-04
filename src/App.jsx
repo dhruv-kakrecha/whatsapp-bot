@@ -9,7 +9,7 @@ import AddTemplate from "./components/site/templates/AddTemplate";
 import AllAccounts from "./components/site/accounts/AllAccounts";
 import Login from "./components/site/Login";
 import { useSelector } from "react-redux";
-import Campaign from "./components/site/Campaign/campaign";
+import Campaign from "./components/site/campaign/Campaign";
 
 function App() {
 
