@@ -10,6 +10,7 @@ import AllAccounts from "./components/site/accounts/AllAccounts";
 import Login from "./components/site/Login";
 import { useSelector } from "react-redux";
 import Campaign from "./components/site/campaign/Campaign";
+import Reports from "./components/site/reports/Reports";
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
           <Route exact path="/contacts" element={<RouteWrapper component={Contacts} />} />
           <Route exact path="/acounts" element={<RouteWrapper component={AllAccounts} />} />
           <Route exact path="/campaign" element={<RouteWrapper component={Campaign} />} />
+          <Route exact path="/reports" element={<RouteWrapper component={Reports} />} />
         </Routes>
       ) : (
         <Routes>
