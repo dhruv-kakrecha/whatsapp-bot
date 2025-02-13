@@ -13,8 +13,7 @@ import { useSelector } from 'react-redux';
 
 const Reports = () => {
     const { RangePicker } = DatePicker;
-    const { user } = useSelector(state => state.auth)
-    console.log("user", user);
+    const { payment } = useSelector(state => state.auth)
 
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
@@ -23,9 +22,9 @@ const Reports = () => {
         setLoading(true)
         try {
             const payload = {
-                username: "Drdiamondauto@gmail.com",
-                dateFrom: dateRange[0].set('hour', 0).set('minute', 0).set('second', 0).toISOString(),
-                dateTo: dateRange[1].set('hour', 23).set('minute', 59).set('second', 59).toISOString(),
+                username: payment?.email,
+                dateFrom: dateRange[0],
+                dateTo: dateRange[1],
                 searchString: "",
             };
             const { data } = await axiosInstance.post("/statistics/get", payload);
@@ -49,18 +48,19 @@ const Reports = () => {
     };
 
     const handleDateChange = async (dates) => {
-        console.log("_dates", dates);
 
         if (dates) {
-            const formattedDates = [dates[0].toISOString(), dates[1].toISOString()];
-            console.log("Selected Dates: ", formattedDates);
-            await getStatisticsData(dates);
+
+            const startDate = dates[0].toLocaleDateString().replace("/" , "-")
+            console.log("Selected Dates: ", startDate);
         }
     };
 
     useEffect(() => {
-        const initialDateFrom = dayjs('2025/01/01', 'YYYY/MM/DD').set('hour', 0).set('minute', 0).set('second', 0);
-        const initialDateTo = dayjs(new Date()).set('hour', 23).set('minute', 59).set('second', 59);
+        const initialDateFrom = "2025-01-01T00:00:00.000Z";
+        const date = new Date()
+        const initialDateTo = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T23:59:59.000Z`
+        
         getStatisticsData([initialDateFrom, initialDateTo]);
     }, []);
     return (
@@ -70,14 +70,14 @@ const Reports = () => {
             <ProCard loading={loading} title="Statistics">
                 <Card style={{ marginBlock: 24 }}>
                     <Flex justify='end'>
-                        <RangePicker
+                        {/* <RangePicker
                             defaultValue={[
                                 dayjs('2025/01/01', 'YYYY/MM/DD').set('hour', 0).set('minute', 0).set('second', 0),
                                 dayjs(new Date()).set('hour', 23).set('minute', 59).set('second', 59)
                             ]}
                             format="YYYY/MM/DD"
                             onChange={handleDateChange}
-                        />
+                        /> */}
                     </Flex>
                 </Card>
                 <Row gutter={[16, 24]}>

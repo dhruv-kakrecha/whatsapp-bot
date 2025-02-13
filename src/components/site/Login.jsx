@@ -21,7 +21,8 @@ const Login = () => {
                 if (data.result.result) {
                     dispatch(login({
                         token: data.result.profile.token,
-                        user: data.result.profile
+                        user: data.result.profile,
+                        payment: data.result.payment
                     }))
                     message.success("Login successful");
                 } else {
