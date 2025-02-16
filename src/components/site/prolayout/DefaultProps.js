@@ -12,25 +12,25 @@ const menu = {
       {
         path: "/acounts",
         name: "Acounts",
-        // icon: <SmileFilled />,
       },
       {
         path: "/templates",
         name: "Templates",
-        // icon: <SmileFilled />,
       },
       {
         path: "/contacts",
         name: "Contacts",
-        // icon: <SmileFilled />,
       },
-     
+
       {
         path: "/campaign",
         name: "Campaign",
-        // icon: <SmileFilled />,
       },
-      
+      {
+        path: "/reports",
+        name: "Reports",
+      },
+
     ],
   },
   location: {

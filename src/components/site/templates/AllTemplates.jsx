@@ -20,6 +20,7 @@ const AllTemplates = ({
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
+        
     });
 
     const handleTableChange = (pagination) => {
