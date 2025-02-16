@@ -25,7 +25,8 @@ const AllAccounts = ({
     const getAccountData = async (query) => {
         setLoading(true);
         try {
-            const { data } = await axiosInstance.get(`accounts/all?account_status=${query.account_status}&quality_rating=${query.quality_rating}`);
+            // const { data } = await axiosInstance.get(`accounts/all?account_status=${query.account_status}&quality_rating=${query.quality_rating}`);
+            const { data } = await axiosInstance.get(`accounts/all`);
             setAllAccounts(data?.accounts);
             setLoading(false);
         } catch (error) {

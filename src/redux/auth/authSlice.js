@@ -5,13 +5,15 @@ export const authSlice = createSlice({
     initialState: {
         isLoggedIn: false,
         user: {},
-        token: ""
+        token: "",
+        payment: {}
     },
     reducers: {
         login: (state, action) => {
-            const { token , user } = action.payload
+            const { token, user, payment } = action.payload
             state.isLoggedIn = true;
             state.user = user;
+            state.payment = payment;
             state.token = token;
         },
         logout: (state) => {
