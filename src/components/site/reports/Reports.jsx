@@ -68,18 +68,6 @@ const Reports = () => {
             title="Reports"
         >
             <ProCard loading={loading} title="Statistics">
-                <Card style={{ marginBlock: 24 }}>
-                    <Flex justify='end'>
-                        {/* <RangePicker
-                            defaultValue={[
-                                dayjs('2025/01/01', 'YYYY/MM/DD').set('hour', 0).set('minute', 0).set('second', 0),
-                                dayjs(new Date()).set('hour', 23).set('minute', 59).set('second', 59)
-                            ]}
-                            format="YYYY/MM/DD"
-                            onChange={handleDateChange}
-                        /> */}
-                    </Flex>
-                </Card>
                 <Row gutter={[16, 24]}>
                     {data?.map((item, index) => (
                         <Col key={index} xs={12} sm={6} md={6} lg={6} xl={3} >
