@@ -17,16 +17,28 @@ const AllAccounts = ({
     const [loading, setLoading] = useState(false);
     const [filterModal, setFilterModal] = useState(false);
     const [filters, setFilters] = useState({
-        account_status: "CONNECTED",
-        quality_rating: "GREEN"
+        account_status: "ALL",
+        quality_rating: "ALL"
     })
     const [allAccounts, setAllAccounts] = useState([{}]);
 
     const getAccountData = async (query) => {
         setLoading(true);
         try {
-            // const { data } = await axiosInstance.get(`accounts/all?account_status=${query.account_status}&quality_rating=${query.quality_rating}`);
-            const { data } = await axiosInstance.get(`accounts/all`);
+
+            const queryParams = new URLSearchParams();
+
+            if (query.account_status !== "ALL") {
+                queryParams.append("account_status", query.account_status);
+            }
+
+            if (query.quality_rating !== "ALL") {
+                queryParams.append("quality_rating", query.quality_rating);
+            }
+
+            const queryString = queryParams.toString();
+            const url = `accounts/all${queryString ? `?${queryString}` : ""}`;
+            const { data } = await axiosInstance.get(url);
             setAllAccounts(data?.accounts);
             setLoading(false);
         } catch (error) {
@@ -205,6 +217,7 @@ const AllAccounts = ({
                                 onChange={(value) => setFilters(prev => ({ ...prev, account_status: value }))}
                                 style={{ width: "100%" }}
                                 options={[
+                                    { label: "ALL", value: "ALL" },
                                     { label: "CONNECTED", value: "CONNECTED" },
                                     { label: "BANNED", value: "BANNED" },
                                     { label: "FLAG", value: "FLAG" },
@@ -213,7 +226,7 @@ const AllAccounts = ({
                         </Form.Item>
 
                         <Form.Item
-                            label="Quality Rating"
+                            label="Filter by Quality Rating"
                             initialValue={filters.quality_rating}
                         >
                             <Select
@@ -221,6 +234,7 @@ const AllAccounts = ({
                                 onChange={(value) => setFilters(prev => ({ ...prev, quality_rating: value }))}
                                 style={{ width: "100%" }}
                                 options={[
+                                    { label: "ALL", value: "ALL" },
                                     { label: "GREEN", value: "GREEN" },
                                     { label: "MEDIUM", value: "MEDIUM" },
                                     { label: "LOW", value: "LOW" },

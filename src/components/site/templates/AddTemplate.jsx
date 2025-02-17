@@ -68,14 +68,14 @@ const AddTemplate = () => {
 
             if (type === "single") {
                 payload.client_id = CLIENT_ID
-                const { data } = await axiosInstance.post("https://wa-wati-backend.vercel.app/templates/create", payload);
+                const { data } = await axiosInstance.post("/templates/create", payload);
 
                 if (data.success) {
                     message.success("Template created successfully!");
                     navigate("/templates")
                 }
             } else if (type === "bulk") {
-                const { data } = await axiosInstance.post("https://wa-wati-backend.vercel.app/templates/create/bulk", { template: payload, "startAccountIndex": startAccountIndex, "endAccountIndex": endAccountIndex });
+                const { data } = await axiosInstance.post("/templates/create/bulk", { template: payload, "startAccountIndex": startAccountIndex, "endAccountIndex": endAccountIndex });
 
                 if (data.success) {
                     message.success("Template created for all accounts!");
@@ -271,33 +271,14 @@ const AddTemplate = () => {
                         maxLength={3}
                     />
                     <Flex gap={15} style={{ marginTop: 25, }} justify="flex-end">
-                    <Form.Item
-                            // style={{ marginBottom: "15px" }}
+                        <Form.Item
                             name={"start account number"}
-                            // label={"Start Account Number"}
-                            rules={[
-                                {
-                                    required: true,
-                                    type: "string",
-                                    message: "Please enter start account number",
-                                },
-                                { max: 25, message: "Title must be within 25 characters" },
-                            ]}
+                           
                         >
                             <Input size="default size" onChange={(e) => { startAccountNumber(e) }} type="number" style={{ width: '100%' }} placeholder="Start Account Number" />
                         </Form.Item>
                         <Form.Item
-                            // style={{ marginBottom: "15px" }}
                             name={"end account number"}
-                            // label={"End Account Number"}
-                            rules={[
-                                {
-                                    required: true,
-                                    type: "string",
-                                    message: "Please enter end account number",
-                                },
-                                { max: 25, message: "Title must be within 25 characters" },
-                            ]}
                         >
                             <Input size="default size" onChange={(e) => { endAccountNumber(e) }} type="number" style={{ width: '100%' }} placeholder="End Account Number" />
                         </Form.Item>
@@ -322,7 +303,7 @@ const AddTemplate = () => {
                         >
                             Create For All Accounts
                         </Button>
-                        
+
                     </Flex>
 
                 </Form>

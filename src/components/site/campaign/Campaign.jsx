@@ -84,7 +84,6 @@ const Campaign = () => {
     } else {
       try {
 
-
         const payload = {
           template_name: selectedTemplate,
           account_ids: selectedAccounts,
@@ -92,7 +91,8 @@ const Campaign = () => {
           change_account_after_messages: messagesPerAccount,
           receivers: selectedContacts.map((contact) => ({ whatsappNumber: contact }))
         }
-        const { data } = axiosInstance.post("/messages/send/bulk", payload)
+        const { data } = await axiosInstance.post("/messages/send/bulk", payload)
+        message.success("message sent successfully")
       } catch (error) {
         message.error(error.message)
       }
