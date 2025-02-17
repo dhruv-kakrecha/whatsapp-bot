@@ -4,8 +4,6 @@ import React from 'react'
 const BasicConfiguration = ({
     campaignName,
     setCampaignName,
-    messagesPerAccount,
-    setMessagesPerAccount
 }) => {
 
     return (
@@ -19,16 +17,6 @@ const BasicConfiguration = ({
                 >
                     <Input value={campaignName} onChange={(e) => setCampaignName(e.target.value)} placeholder="Campaign Name" />
                 </Form.Item>
-
-                <Form.Item
-                    label="Messages Per Account"
-                    name="messages"
-                    required
-                    initialValue={messagesPerAccount}
-                >
-                    <Input type='number' value={messagesPerAccount} onChange={(e) => setMessagesPerAccount(e.target.value)} placeholder="Messages Per Account" />
-                </Form.Item>
-
             </Form>
 
         </Card>
