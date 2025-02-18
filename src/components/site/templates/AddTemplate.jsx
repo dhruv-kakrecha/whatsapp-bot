@@ -71,7 +71,7 @@ const AddTemplate = () => {
                 const { data } = await axiosInstance.post("/templates/create", payload);
 
                 if (data.success) {
-                    message.success("Template created successfully!");
+                    message.success("Template created successfully!");  
                     navigate("/templates")
                 }
             } else if (type === "bulk") {

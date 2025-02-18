@@ -1,6 +1,6 @@
-import { Button, Card, Flex, message, Popconfirm, Row, Table, Tooltip, Typography, Upload } from 'antd';
+import { Button, Card, Dropdown, Flex, message, Popconfirm, Row, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { DeleteOutlined, EditOutlined, ImportOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined, EditOutlined, ImportOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import AddContacts from './AddContacts';
 import TableActions from '../../common/TableActions';
@@ -60,7 +60,7 @@ const Contacts = ({
 
             // Format data to match desired JSON structure
             // const contacts = jsonData.map(({ phone, countryCode }) => ({ phone, countryCode }));
-            const contacts = jsonData.map((row) => ({ phone: row.Phone, countryCode: row.CountryCode }));
+            const contacts = jsonData.map((row) => ({ phone: row.phone, countryCode: row.countryCode }));
 
             console.log("contacts", contacts);
 
@@ -93,7 +93,21 @@ const Contacts = ({
             beforeUpload={handleUpload}
             showUploadList={false} >
             <Button type='primary' icon={<ImportOutlined />}>Import</Button>
-        </Upload >
+        </Upload >,
+        <Dropdown
+            menu={{
+                items: [
+                    {
+                        label: (
+                            <a download href='/sample/sample-contacts.xlsx' >Download Sample Excel File</a>
+                        ),
+                    },
+                ],
+            }}
+            trigger={["hover"]}
+        >
+            <Button type='primary'><DownOutlined /></Button>
+        </Dropdown>
     ]
 
 

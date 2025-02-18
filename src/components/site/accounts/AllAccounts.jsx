@@ -1,6 +1,6 @@
-import { Button, Card, Flex, Form, Input, message, Modal, Popconfirm, Row, Select, Table, Tooltip, Typography, Upload } from 'antd';
+import { Button, Card, Dropdown, Flex, Form, Input, message, Modal, Popconfirm, Row, Select, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { DeleteOutlined, EditOutlined, FilterOutlined, ImportOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined, EditOutlined, FilterOutlined, ImportOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import TableActions from '../../common/TableActions';
 import * as XLSX from "xlsx";
@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 
 const AllAccounts = ({
     showSelect,
+    showDelete,
     selectedAccounts,
     setSelectedAccounts
 }) => {
@@ -21,11 +22,11 @@ const AllAccounts = ({
         quality_rating: "ALL"
     })
     const [allAccounts, setAllAccounts] = useState([{}]);
+    const [accountIds, setAccountIds] = useState([]);
 
     const getAccountData = async (query) => {
         setLoading(true);
         try {
-
             const queryParams = new URLSearchParams();
 
             if (query.account_status !== "ALL") {
@@ -43,6 +44,8 @@ const AllAccounts = ({
             setLoading(false);
         } catch (error) {
             message.error(error.message);
+        } finally {
+            setLoading(false);
         }
 
     }
@@ -74,11 +77,12 @@ const AllAccounts = ({
             // Format data to match desired JSON structure
             const accounts = jsonData.map(({ name, phone, username, password, loginUrl }) => ({ name, phone, username, password, loginUrl }));
 
-            console.log("accounts", accounts);
 
-            await axiosInstance.post("accounts/add/bulk", { accounts })
-            message.success("accounts added successfully")
-            getAccountData()
+            const { data } = await axiosInstance.post("accounts/add/bulk", { accounts })
+            if (data?.status) {
+                message.success("accounts added successfully")
+            }
+            getAccountData(filters)
         };
 
         reader.readAsBinaryString(file);
@@ -95,17 +99,60 @@ const AllAccounts = ({
             name: record.name,
         }),
     };
+    const rowSelectionDelete = {
+        onChange: (selectedRowKeys) => {
+            setAccountIds(selectedRowKeys);
+        },
+        getCheckboxProps: (record) => ({
+            disabled: record.name === 'Disabled User',
+            name: record.name,
+        }),
+    };
+
+    const handleMultipleDelete = async (userIds) => {
+        try {
+            const { data } = await axiosInstance.post("/accounts/delete/multiple", { userIds })
+            message.success("Selected accounts deleted successfully")
+        } catch (error) {
+            message.error(error.message)
+        }
+    }
+    const handleSingleDelete = async (userId) => {
+        try {
+            const { data } = await axiosInstance.post("/accounts/delete/single", { userId })
+            message.success("account deleted successfully")
+        } catch (error) {
+            message.error(error.message)
+        }
+    }
 
     const tableButtons = [
         <Button onClick={() => setFilterModal(true)} icon={<FilterOutlined />}>
             Filters
         </Button>,
+        ...(showSelect ? [] : [<Button danger type='primary' disabled={accountIds.length <= 0} onClick={() => handleMultipleDelete(accountIds)}>
+            Delete Selected
+        </Button>]),
         <Upload
             key={"import"}
             beforeUpload={handleUpload}
             showUploadList={false} >
             <Button type='primary' icon={<ImportOutlined />}>Import</Button>
-        </Upload >
+        </Upload >,
+        <Dropdown
+            menu={{
+                items: [
+                    {
+                        label: (
+                            <a download href='/sample/sample-accounts.xlsx' >Download Sample Excel File</a>
+                        ),
+                    },
+                ],
+            }}
+            trigger={["hover"]}
+        >
+            <Button type='primary'><DownOutlined /></Button>
+        </Dropdown>
     ]
 
     const columns = [
@@ -145,6 +192,36 @@ const AllAccounts = ({
             key: 'loginUrl',
             render: (loginUrl) => <Link to={loginUrl}>{loginUrl} </Link> ?? "-",
         },
+        {
+            title: "Actions",
+            key: "action",
+            fixed: "right",
+            width: 100,
+            render: (_, record, index) => (
+                <Flex gap="small" vertical>
+                    <Flex wrap gap="small">
+                        <Tooltip
+                            color="red"
+                            title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}
+                        >
+                            <Popconfirm
+                                key={`confirmation-${record?._id}`}
+                                icon={""}
+                                description="Are you sure to delete this Account?"
+                                onConfirm={() => {
+                                    handleSingleDelete(record?._id);
+                                }}
+                                onCancel={() => { }}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button size="small" shape="circle" icon={<DeleteOutlined />} />
+                            </Popconfirm>
+                        </Tooltip>
+                    </Flex>
+                </Flex>
+            ),
+        },
     ];
 
     return (
@@ -161,7 +238,7 @@ const AllAccounts = ({
 
                     <Card>
                         <Table
-                            rowSelection={showSelect && rowSelection}
+                            rowSelection={showSelect ? rowSelection : showDelete && rowSelectionDelete}
                             columns={columns}
                             dataSource={allAccounts}
                             loading={loading}

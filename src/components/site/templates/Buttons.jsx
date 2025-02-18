@@ -33,8 +33,6 @@ const Buttons = ({
     maxLength = 4
 }) => {
 
-    console.log("All Buttons:", buttons);
-
     const actions = [
         { value: "quick_reply", label: "Quick Reply" },
         { value: "call", label: "Call Button" },
