@@ -31,7 +31,7 @@ function App() {
       {isLoggedIn ? (
         <Routes>
           <Route exact path="/" element={<RouteWrapper component={AllAccounts} showDelete />} />
-          <Route exact path="/templates" element={<RouteWrapper component={AllTemplates} />} />
+          <Route exact path="/templates" element={<RouteWrapper component={AllTemplates} showDelete />} />
           <Route exact path="/templates/add" element={<RouteWrapper component={AddTemplate} />} />
           <Route exact path="/contacts" element={<RouteWrapper component={Contacts} />} />
           <Route exact path="/acounts" element={<RouteWrapper component={AllAccounts} showDelete />} />

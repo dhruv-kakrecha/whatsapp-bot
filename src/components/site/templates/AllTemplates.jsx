@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import axiosInstance from '../../../axios/axiosInstance';
 
 const AllTemplates = ({
+    showDelete,
     showSelect,
     selectedTemplate,
     setSelectedTemplate,
@@ -16,11 +17,11 @@ const AllTemplates = ({
     // const allTemplates = templateData.result.items
     const [allTemplates, setAllTemplates] = useState([])
     const [loading, setLoading] = useState(false)
-    const [selectedRows, setSelectedRows] = useState([]);
+    const [templateIds, setTemplatesIds] = useState([]);
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
-        
+
     });
 
     const handleTableChange = (pagination) => {
@@ -48,6 +49,9 @@ const AllTemplates = ({
 
     const tableButtons = useMemo(() => {
         return [
+            ...(showDelete ? [] : [<Button danger type='primary' disabled={templateIds.length <= 0} onClick={() => handleMultipleDelete(templateIds)}>
+                Delete Selected
+            </Button>]),
             <Button
                 type="primary"
                 key={"create_template"}
@@ -59,7 +63,32 @@ const AllTemplates = ({
                 Create Template
             </Button>,
         ];
-    }, [navigate]);
+    }, [navigate, templateIds]);
+
+    const rowSelectionDelete = {
+        onChange: (selectedRowKeys) => {
+            setTemplatesIds(selectedRowKeys);
+        },
+    };
+
+    const handleMultipleDelete = async (userIds) => {
+        try {
+            // const { data } = await axiosInstance.post("/accounts/delete/multiple", { userIds })
+            message.success("Selected templates deleted successfully")
+            getTemplatesData();
+        } catch (error) {
+            message.error(error.message)
+        }
+    }
+    const handleSingleDelete = async (userId) => {
+        try {
+            // const { data } = await axiosInstance.post("/accounts/delete/single", { userId })
+            message.success("template deleted successfully")
+            getTemplatesData();
+        } catch (error) {
+            message.error(error.message)
+        }
+    }
 
     const columns = [
         {
@@ -106,6 +135,36 @@ const AllTemplates = ({
                 return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
             }
         },
+        {
+            title: "Actions",
+            key: "action",
+            fixed: "right",
+            width: 100,
+            render: (_, record, index) => (
+                <Flex gap="small" vertical>
+                    <Flex wrap gap="small">
+                        <Tooltip
+                            color="red"
+                            title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}
+                        >
+                            <Popconfirm
+                                key={`confirmation-${record?._id}`}
+                                icon={""}
+                                description="Are you sure to delete this Account?"
+                                onConfirm={() => {
+                                    handleSingleDelete(record?._id);
+                                }}
+                                onCancel={() => { }}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button size="small" shape="circle" icon={<DeleteOutlined />} />
+                            </Popconfirm>
+                        </Tooltip>
+                    </Flex>
+                </Flex>
+            ),
+        },
     ];
 
     return (
@@ -124,6 +183,7 @@ const AllTemplates = ({
 
                     <Card>
                         <Table
+                            rowSelection={showDelete && rowSelectionDelete}
                             loading={loading}
                             columns={columns}
                             dataSource={allTemplates}

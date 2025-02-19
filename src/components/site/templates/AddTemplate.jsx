@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Flex, Form, Input, message, Radio, Row, Space } from "antd";
+import { Button, Col, Flex, Form, Input, message, Radio, Row, Select, Space, Typography } from "antd";
 import Buttons from "./Buttons";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios/axiosInstance";
+import UploadMedia from "./UploadMedia";
+import { useMemo } from "react";
 
 const AddTemplate = () => {
-
     const CLIENT_ID = useSelector(state => state.auth.user.tenantId)
     const navigate = useNavigate()
     const [buttons, setButtons] = useState([
@@ -19,11 +20,11 @@ const AddTemplate = () => {
             }
         }
     ])
-    // ["quick_reply","call_to_action",] .join("_and_")
     const [url, setUrl] = useState("")
     const [startAccountIndex, setStartAccountIndex] = useState(null)
     const [endAccountIndex, setEndAccountIndex] = useState(null)
-
+    const [templateType, setTemplateType] = useState("rich_card")
+    const { Text } = Typography
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -36,6 +37,12 @@ const AddTemplate = () => {
         }, {});
         form.setFieldsValue(initValues);
     }, [buttons?.length]);
+
+    const templatesTypeOPtions = [
+        { label: "Rich Card", value: "rich_card" },
+        { label: "Text With Button", value: "text_with_button" }
+    ]
+
 
 
     const handleCreateTemplate = async (type) => {
@@ -93,10 +100,10 @@ const AddTemplate = () => {
         }
     };
 
-    // const handleUpload = ({ file }) => {
-    //     const fileUrl = URL.createObjectURL(file);
-    //     setUrl(fileUrl)
-    // }
+    const handleUpload = ({ file }) => {
+        const fileUrl = URL.createObjectURL(file);
+        setUrl(fileUrl)
+    }
 
     const handleAddButton = () => {
         if (buttons?.length === 3) {
@@ -140,11 +147,9 @@ const AddTemplate = () => {
     };
 
     const startAccountNumber = (e) => {
-        console.log("start", e.target.value)
         setStartAccountIndex(e.target.value)
     }
     const endAccountNumber = (e) => {
-        console.log("end", e.target.value)
         setEndAccountIndex(e.target.value)
     }
 
@@ -154,90 +159,77 @@ const AddTemplate = () => {
         >
             <ProCard>
                 <Form form={form} layout="vertical">
+                    <Flex justify="end" gap={15}>
+                        <Form.Item
+                            layout="horizontal"
+                            style={{ marginBottom: "15px" }}
+                            name="template_type"
+                            label="Type"
+                        >
+                            <Select
+                                defaultValue="rich_card"
+                                style={{ width: 150 }}
+                                options={[
+                                    { label: "Rich Card", value: "rich_card" },
+                                    { label: "Text With Button", value: "text_with_button" }
+                                ]}
+                                onChange={(value) => setTemplateType(value)}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            layout="horizontal"
+                            style={{ marginBottom: "15px", width: 400 }}
+                            name={"template_name"}
+                            label="Template Name"
+                            rules={[
+                                {
+                                    required: true,
+                                    type: "string",
+                                    message: "Please enter template name",
+                                },
+                                { max: 25, message: "Title must be within 25 characters" },
+                            ]}
+                        >
+                            <Input placeholder="Template Name" />
+                        </Form.Item>
+                    </Flex>
                     <Col>
 
                         {/* Media upload */}
 
                         <Row gutter={[16, 24]}>
-                            <Col md={24}>
-                                {/* <UploadMedia url={url} handleUpload={handleUpload} /> */}
-                                <Form.Item
-                                    style={{ marginBottom: "15px" }}
-                                    name={"template_name"}
-                                    label={"Template Name"}
-                                    rules={[
-                                        {
-                                            required: true,
-                                            type: "string",
-                                            message: "Please enter template name",
-                                        },
-                                        { max: 25, message: "Title must be within 25 characters" },
-                                    ]}
-                                >
-                                    <Input
-                                        // onChange={(e) => handleFieldsChange(e.target.value, "title")}
-                                        //   value={title}
-                                        //   defaultValue={title}
+                            {templateType === "rich_card" && (
+                                <Col md={12} style={{ textAlign: "center" }}>
+                                    <Form.Item
+                                        style={{ marginBottom: "15px" }}
+                                        name={"image_url"}
+                                        label={"Image Url"}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                type: "string",
+                                                message: "Please enter valid url",
+                                            },
+                                        ]}
+                                    >
+                                        <Space direction="vertical" style={{ width: "100%" }}>
+                                            <UploadMedia url={url} handleUpload={handleUpload} />
+                                            <Text>OR</Text>
+                                            <Input
+                                                placeholder="Image Url"
+                                                maxLength={200}
+                                                showCount
+                                            />
+                                        </Space>
+                                    </Form.Item>
+                                </Col>
+                            )}
 
-                                        placeholder="Template Name"
-                                        maxLength={200}
-                                        showCount
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col md={12}>
-                                <Form.Item
-                                    style={{ marginBottom: "15px" }}
-                                    name={"image_url"}
-                                    label={"Image Url"}
-                                    rules={[
-                                        {
-                                            required: true,
-                                            type: "string",
-                                            message: "Please enter valid url",
-                                        },
-                                    ]}
-                                >
-                                    <Input
-                                        // onChange={(e) => handleFieldsChange(e.target.value, "title")}
-                                        //   value={title}
-                                        //   defaultValue={title}
-
-                                        placeholder="Image Url"
-                                        maxLength={200}
-                                        showCount
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col md={12}>
-                                <Form.Item
-                                    style={{ marginBottom: "15px" }}
-                                    name={"footer"}
-                                    label={"Footer"}
-                                    rules={[
-                                        {
-                                            required: true,
-                                            type: "string",
-                                            message: "Please enter footer",
-                                        },
-                                        { max: 25, message: "Title must be within 25 characters" },
-                                    ]}
-                                >
-                                    <Input
-                                        // onChange={(e) => handleFieldsChange(e.target.value, "title")}
-                                        //   value={title}
-                                        //   defaultValue={title}
-
-                                        placeholder="Footer"
-                                        maxLength={200}
-                                        showCount
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col md={24}>
+                            <Col md={templateType === "rich_card" ? 12 : 24}>
                                 <Form.Item
                                     name={"body"}
-                                    label={"Body"}
+                                    label={"Message"}
                                     rules={[
                                         {
                                             required: true,
@@ -248,14 +240,25 @@ const AddTemplate = () => {
                                     ]}
                                 >
                                     <Input.TextArea
-                                        rows={4}
+                                        rows={templateType === "rich_card" ? 12 : 6}
                                         // onChange={(e) => handleFieldsChange(e.target.value, "title")}
                                         //   value={title}
                                         //   defaultValue={title}
-                                        placeholder="Body"
+                                        placeholder="Message"
                                         maxLength={999}
                                         showCount
                                     />
+                                </Form.Item>
+                            </Col>
+                            <Col md={24}>
+                                <Form.Item
+                                    style={{ marginBottom: "15px" }}
+                                    name={"footer"}
+                                    label={<Text>
+                                        Footer <small style={{ color: "gray" }}>(optiona)l</small>
+                                    </Text>}
+                                >
+                                    <Input placeholder="Footer" />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -273,7 +276,7 @@ const AddTemplate = () => {
                     <Flex gap={15} style={{ marginTop: 25, }} justify="flex-end">
                         <Form.Item
                             name={"start account number"}
-                           
+
                         >
                             <Input size="default size" onChange={(e) => { startAccountNumber(e) }} type="number" style={{ width: '100%' }} placeholder="Start Account Number" />
                         </Form.Item>

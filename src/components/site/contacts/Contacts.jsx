@@ -19,8 +19,7 @@ const Contacts = ({
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [singleData, setSingleData] = useState({});
-    const [selectedRows, setSelectedRows] = useState([]);
-
+    const [contactIds, setContactIds] = useState([]);
 
     const getContactsData = async () => {
         setLoading(true);
@@ -81,6 +80,9 @@ const Contacts = ({
     }
 
     const tableButtons = [
+        ...(showSelect ? [] : [<Button danger type='primary' disabled={templateIds.length <= 0} onClick={() => handleMultipleDelete(templateIds)}>
+            Delete Selected
+        </Button>]),
         <Button
             key={"add"}
             icon={<PlusCircleOutlined />}
@@ -110,6 +112,25 @@ const Contacts = ({
         </Dropdown>
     ]
 
+    const handleMultipleDelete = async (userIds) => {
+        try {
+            // const { data } = await axiosInstance.post("/accounts/delete/multiple", { userIds })
+            message.success("Selected templates deleted successfully")
+            getTemplatesData();
+        } catch (error) {
+            message.error(error.message)
+        }
+    }
+    const handleSingleDelete = async (userId) => {
+        try {
+            // const { data } = await axiosInstance.post("/accounts/delete/single", { userId })
+            message.success("template deleted successfully")
+            getTemplatesData();
+        } catch (error) {
+            message.error(error.message)
+        }
+    }
+
 
     const handleCloseModal = () => {
         setOpen(false)
@@ -120,7 +141,6 @@ const Contacts = ({
     const rowSelection = {
         selectedRowKeys: selectedContacts,
         onChange: (selectedRowKeys, selectedRows) => {
-            setSelectedRows(selectedRowKeys)
             setSelectedContacts(selectedRows.map(({ phone, countryCode }) => countryCode + phone))
             console.log("selectedRowKeys", selectedRowKeys);
         },

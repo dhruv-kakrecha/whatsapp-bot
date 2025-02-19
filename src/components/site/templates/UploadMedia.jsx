@@ -15,10 +15,10 @@ const UploadMedia = ({
                 multiple={false}
                 showUploadList={false}
                 customRequest={handleUpload}>
-                {url ? <img src={url} alt="" height={170} /> : <>
+                {url ? <img src={url} alt="" height={165} /> : <>
                     <Card>
                         <Button type="primary" icon={<UploadOutlined />}>
-                            Upload
+                            Upload Media
                         </Button>
                         <p className="ant-upload-text">Click or drag file to this area to upload</p>
                         <p className="ant-upload-hint">
