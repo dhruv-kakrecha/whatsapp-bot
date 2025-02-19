@@ -113,6 +113,7 @@ const AllAccounts = ({
         try {
             const { data } = await axiosInstance.post("/accounts/delete/multiple", { userIds })
             message.success("Selected accounts deleted successfully")
+            getAccountData(filters);
         } catch (error) {
             message.error(error.message)
         }
@@ -121,6 +122,7 @@ const AllAccounts = ({
         try {
             const { data } = await axiosInstance.post("/accounts/delete/single", { userId })
             message.success("account deleted successfully")
+            getAccountData(filters);
         } catch (error) {
             message.error(error.message)
         }
