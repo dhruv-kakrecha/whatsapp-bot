@@ -111,21 +111,28 @@ const AllContacts = ({
         </Dropdown>
     ]
 
-    const handleMultipleDelete = async (userIds) => {
+    const handleMultipleDelete = async (contact_ids) => {
         try {
-            // const { data } = await axiosInstance.post("/accounts/delete/multiple", { userIds })
-            message.success("Selected contacts deleted successfully")
-            getContactsData();
+            setLoading(true)
+            const { data } = await axiosInstance.post("/contacts/delete/multiple", { contact_ids })
+            if (data.success) {
+                message.success(data.message);
+                getContactsData();
+                setContactIds([])
+            }
         } catch (error) {
             message.error(error.message)
         }
     }
 
-    const handleSingleDelete = async (userId) => {
+    const handleSingleDelete = async (contact_id) => {
         try {
-            // const { data } = await axiosInstance.post("/accounts/delete/single", { userId })
-            message.success("contact deleted successfully")
-            getContactsData();
+            setLoading(true)
+            const { data } = await axiosInstance.post("/contacts/delete/single", { contact_id })
+            if (data.success) {
+                message.success(data.message);
+                getContactsData();
+            }
         } catch (error) {
             message.error(error.message)
         }
@@ -232,7 +239,9 @@ const AllContacts = ({
                             scroll={{
                                 x: 500,
                             }}
-                            rowKey={({ phone, countryCode }) => countryCode + phone}
+                            rowKey={({ phone, countryCode, _id }) => {
+                                return showDelete ? _id : countryCode + phone
+                            }}
                             footer={() => {
                                 return (
                                     <Row >

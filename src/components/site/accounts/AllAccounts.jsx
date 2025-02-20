@@ -104,8 +104,10 @@ const AllAccounts = ({
     const handleMultipleDelete = async (userIds) => {
         try {
             const { data } = await axiosInstance.post("/accounts/delete/multiple", { userIds })
-            message.success("Selected accounts deleted successfully")
-            getAccountData(filters);
+            if (data.success) {
+                message.success(data.message)
+                getAccountData(filters);
+            }
         } catch (error) {
             message.error(error.message)
         }
@@ -113,8 +115,10 @@ const AllAccounts = ({
     const handleSingleDelete = async (userId) => {
         try {
             const { data } = await axiosInstance.post("/accounts/delete/single", { userId })
-            message.success("account deleted successfully")
-            getAccountData(filters);
+            if (data.success) {
+                message.success(data.message)
+                getAccountData(filters);
+            }
         } catch (error) {
             message.error(error.message)
         }

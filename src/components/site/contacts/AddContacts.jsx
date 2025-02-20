@@ -61,7 +61,7 @@ const AddContacts = ({ open, handleCloseModal, handleSubmit, isEdit, singleData 
             },
           ]}
         >
-          <Input />
+          <Input placeholder="Enter Name" />
         </Form.Item>
 
         <Form.Item

@@ -10,8 +10,8 @@ const menu = {
     path: "/",
     routes: [
       {
-        path: "/acounts",
-        name: "Acounts",
+        path: "/accounts",
+        name: "Accounts",
       },
       {
         path: "/templates",
@@ -29,6 +29,20 @@ const menu = {
       {
         path: "/reports",
         name: "Reports",
+        routes: [
+          {
+            path: "accounts",
+            name: "Accounts",
+          },
+          {
+            path: "templates",
+            name: "Templates",
+          },
+          {
+            path: "contacts",
+            name: "Contacts",
+          },
+        ]
       },
 
     ],
