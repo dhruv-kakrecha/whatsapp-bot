@@ -1,6 +1,6 @@
-import { Button, Card, Dropdown, Flex, Form, Input, message, Modal, Popconfirm, Row, Select, Table, Tooltip, Typography, Upload } from 'antd';
+import { Button, Card, Dropdown, Flex, Form, message, Modal, Popconfirm, Row, Select, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { DeleteOutlined, DownOutlined, EditOutlined, FilterOutlined, ImportOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined, FilterOutlined, ImportOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import TableActions from '../../common/TableActions';
 import * as XLSX from "xlsx";
@@ -94,19 +94,11 @@ const AllAccounts = ({
         onChange: (selectedRowKeys, selectedRows) => {
             setSelectedAccounts(selectedRows.map(({ _id }) => _id))
         },
-        getCheckboxProps: (record) => ({
-            disabled: record.name === 'Disabled User',
-            name: record.name,
-        }),
     };
     const rowSelectionDelete = {
         onChange: (selectedRowKeys) => {
             setAccountIds(selectedRowKeys);
         },
-        getCheckboxProps: (record) => ({
-            disabled: record.name === 'Disabled User',
-            name: record.name,
-        }),
     };
 
     const handleMultipleDelete = async (userIds) => {
@@ -247,16 +239,6 @@ const AllAccounts = ({
                             scroll={{
                                 x: 1200,
                             }}
-                            // pagination={{
-                            //     current: page,
-                            //     total: templatesTotal,
-                            //     pageSize: pageSize,
-                            //     showSizeChanger: true,
-                            //     onChange: (page, pageSize) => {
-                            //         setPage(page);
-                            //         setPageSize(pageSize);
-                            //     },
-                            // }}
                             rowKey={(record) => record._id}
                             footer={() => {
                                 return (

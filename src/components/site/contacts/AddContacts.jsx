@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css"; // Import styles for PhoneInput
 
-const AddContacts = ({ open, handleCloseModal, handleSubmit, isEdit, index, singleData }) => {
+const AddContacts = ({ open, handleCloseModal, handleSubmit, isEdit, singleData }) => {
   const [form] = Form.useForm();
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState("");

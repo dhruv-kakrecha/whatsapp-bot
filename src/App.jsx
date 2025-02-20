@@ -1,9 +1,7 @@
 
 import PropTypes from "prop-types";
 import ProLayoutWrapper from "./components/site/prolayout/ProLayout";
-import { Test } from "./Test";
 import { Route, Routes } from "react-router-dom";
-import Contacts from "./components/site/contacts/Contacts";
 import AllTemplates from "./components/site/templates/AllTemplates";
 import AddTemplate from "./components/site/templates/AddTemplate";
 import AllAccounts from "./components/site/accounts/AllAccounts";
@@ -11,6 +9,8 @@ import Login from "./components/site/Login";
 import { useSelector } from "react-redux";
 import Campaign from "./components/site/campaign/Campaign";
 import Reports from "./components/site/reports/Reports";
+import AllContacts from "./components/site/contacts/AllContacts";
+import AllCampaign from "./components/site/campaign/AllCampaign";
 
 function App() {
 
@@ -31,11 +31,17 @@ function App() {
       {isLoggedIn ? (
         <Routes>
           <Route exact path="/" element={<RouteWrapper component={AllAccounts} showDelete />} />
+
           <Route exact path="/templates" element={<RouteWrapper component={AllTemplates} showDelete />} />
           <Route exact path="/templates/add" element={<RouteWrapper component={AddTemplate} />} />
-          <Route exact path="/contacts" element={<RouteWrapper component={Contacts} />} />
+
+          <Route exact path="/contacts" element={<RouteWrapper component={AllContacts} showDelete />} />4
+
           <Route exact path="/acounts" element={<RouteWrapper component={AllAccounts} showDelete />} />
-          <Route exact path="/campaign" element={<RouteWrapper component={Campaign} />} />
+
+          <Route exact path="/campaign" element={<RouteWrapper component={AllCampaign} />} />
+          <Route exact path="/campaign/add" element={<RouteWrapper component={Campaign} />} />
+
           <Route exact path="/reports" element={<RouteWrapper component={Reports} />} />
         </Routes>
       ) : (

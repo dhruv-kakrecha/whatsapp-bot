@@ -1,6 +1,6 @@
 import { Button, Card, Dropdown, Flex, message, Popconfirm, Row, Table, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { DeleteOutlined, DownOutlined, EditOutlined, ImportOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined, ImportOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import AddContacts from './AddContacts';
 import TableActions from '../../common/TableActions';
@@ -8,7 +8,8 @@ import * as XLSX from "xlsx";
 import axiosInstance from '../../../axios/axiosInstance';
 
 
-const Contacts = ({
+const AllContacts = ({
+    showDelete,
     showSelect,
     selectedContacts,
     setSelectedContacts
@@ -57,8 +58,6 @@ const Contacts = ({
             const sheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-            // Format data to match desired JSON structure
-            // const contacts = jsonData.map(({ phone, countryCode }) => ({ phone, countryCode }));
             const contacts = jsonData.map((row) => ({ phone: row.phone, countryCode: row.countryCode }));
 
             console.log("contacts", contacts);
@@ -80,7 +79,7 @@ const Contacts = ({
     }
 
     const tableButtons = [
-        ...(showSelect ? [] : [<Button danger type='primary' disabled={templateIds.length <= 0} onClick={() => handleMultipleDelete(templateIds)}>
+        ...(showSelect ? [] : [<Button danger type='primary' disabled={contactIds.length <= 0} onClick={() => handleMultipleDelete(contactIds)}>
             Delete Selected
         </Button>]),
         <Button
@@ -115,17 +114,18 @@ const Contacts = ({
     const handleMultipleDelete = async (userIds) => {
         try {
             // const { data } = await axiosInstance.post("/accounts/delete/multiple", { userIds })
-            message.success("Selected templates deleted successfully")
-            getTemplatesData();
+            message.success("Selected contacts deleted successfully")
+            getContactsData();
         } catch (error) {
             message.error(error.message)
         }
     }
+
     const handleSingleDelete = async (userId) => {
         try {
             // const { data } = await axiosInstance.post("/accounts/delete/single", { userId })
-            message.success("template deleted successfully")
-            getTemplatesData();
+            message.success("contact deleted successfully")
+            getContactsData();
         } catch (error) {
             message.error(error.message)
         }
@@ -144,11 +144,15 @@ const Contacts = ({
             setSelectedContacts(selectedRows.map(({ phone, countryCode }) => countryCode + phone))
             console.log("selectedRowKeys", selectedRowKeys);
         },
-        getCheckboxProps: (record) => ({
-            disabled: record.name === 'Disabled User',
-            name: record.name,
-        }),
     };
+
+    const rowSelectionDelete = {
+        onChange: (selectedRowKeys) => {
+            setContactIds(selectedRowKeys);
+        },
+    };
+
+
 
     const columns = [
         {
@@ -175,48 +179,36 @@ const Contacts = ({
             key: 'phone',
             render: (phone) => phone ?? "-",
         },
-        // {
-        //     title: "Actions",
-        //     key: "action",
-        //     fixed: "right",
-        //     width: 100,
-        //     render: (_, record, index) => (
-        //         <Flex gap="small" vertical>
-        //             <Flex wrap gap="small">
-        //                 <Tooltip title={<span style={{ fontSize: "0.8rem" }}>Edit</span>}>
-        //                     <Button
-        //                         onClick={() => {
-        //                             setIsEdit(true)
-        //                             setOpen(true)
-        //                             setSingleData({ index, record })
-        //                         }}
-        //                         size="small"
-        //                         shape="circle"
-        //                         icon={<EditOutlined />}
-        //                     />
-        //                 </Tooltip>
-        //                 <Tooltip
-        //                     color="red"
-        //                     title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}
-        //                 >
-        //                     <Popconfirm
-        //                         key={`confirmation-${record?._id}`}
-        //                         icon={""}
-        //                         description="Are you sure to delete this brand?"
-        //                         onConfirm={() => {
-        //                             handleDeleteBrand(record?._id);
-        //                         }}
-        //                         onCancel={() => { }}
-        //                         okText="Yes"
-        //                         cancelText="No"
-        //                     >
-        //                         <Button size="small" shape="circle" icon={<DeleteOutlined />} />
-        //                     </Popconfirm>
-        //                 </Tooltip>
-        //             </Flex>
-        //         </Flex>
-        //     ),
-        // },
+        {
+            title: "Actions",
+            key: "action",
+            fixed: "right",
+            width: 100,
+            render: (_, record, index) => (
+                <Flex gap="small" vertical>
+                    <Flex wrap gap="small">
+                        <Tooltip
+                            color="red"
+                            title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}
+                        >
+                            <Popconfirm
+                                key={`confirmation-${record?._id}`}
+                                icon={""}
+                                description="Are you sure to delete this Account?"
+                                onConfirm={() => {
+                                    handleSingleDelete(record?._id);
+                                }}
+                                onCancel={() => { }}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button size="small" shape="circle" icon={<DeleteOutlined />} />
+                            </Popconfirm>
+                        </Tooltip>
+                    </Flex>
+                </Flex>
+            ),
+        },
     ];
 
     return (
@@ -233,24 +225,13 @@ const Contacts = ({
 
                     <Card>
                         <Table
-                            rowSelection={showSelect && rowSelection}
+                            rowSelection={showSelect ? rowSelection : showDelete && rowSelectionDelete}
                             loading={loading}
                             columns={columns}
                             dataSource={contacts}
                             scroll={{
                                 x: 500,
                             }}
-                            // loading={loading}
-                            // pagination={{
-                            //     current: page,
-                            //     total: templatesTotal,
-                            //     pageSize: pageSize,
-                            //     showSizeChanger: true,
-                            //     onChange: (page, pageSize) => {
-                            //         setPage(page);
-                            //         setPageSize(pageSize);
-                            //     },
-                            // }}
                             rowKey={({ phone, countryCode }) => countryCode + phone}
                             footer={() => {
                                 return (
@@ -273,4 +254,4 @@ const Contacts = ({
     )
 }
 
-export default Contacts
+export default AllContacts

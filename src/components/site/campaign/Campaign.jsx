@@ -1,25 +1,18 @@
 import React, { useState } from "react";
 import AllAccounts from "../accounts/AllAccounts";
 import AllTemplates from "../templates/AllTemplates";
-import Contacts from "../contacts/Contacts";
-import { Button, Card, message, Steps } from "antd";
+import { Button, message, Steps } from "antd";
 import BasicConfiguration from "./BasicConfiguration";
 import axiosInstance from "../../../axios/axiosInstance";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
+import AllContacts from "../contacts/AllContacts";
 
 const Campaign = () => {
 
   const [campaignName, setCampaignName] = useState("")
-  const [messagesPerAccount, setMessagesPerAccount] = useState()
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [selectedContacts, setSelectedContacts] = useState([]);
-
-  console.log("campaign Data", {
-    campaignName, messagesPerAccount, selectedAccounts, selectedTemplate, selectedContacts
-  });
-
-
   const [current, setCurrent] = useState(0);
 
   const steps = [
@@ -48,7 +41,7 @@ const Campaign = () => {
     },
     {
       title: "Contact",
-      content: <Contacts
+      content: <AllContacts
         showSelect
         selectedContacts={selectedContacts}
         setSelectedContacts={setSelectedContacts}
@@ -86,7 +79,6 @@ const Campaign = () => {
           template_name: selectedTemplate,
           account_ids: selectedAccounts,
           broadcast_name: campaignName,
-          change_account_after_messages: messagesPerAccount,
           receivers: selectedContacts.map((contact) => ({ whatsappNumber: contact }))
         }
         const { data } = await axiosInstance.post("/messages/send/bulk", payload)

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Flex, Form, Input, message, Radio, Row, Select, Space, Typography } from "antd";
+import { Button, Col, Flex, Form, Input, message, Row, Select, Space, Typography } from "antd";
 import Buttons from "./Buttons";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios/axiosInstance";
 import UploadMedia from "./UploadMedia";
-import { useMemo } from "react";
 
 const AddTemplate = () => {
     const CLIENT_ID = useSelector(state => state.auth.user.tenantId)
@@ -37,13 +36,6 @@ const AddTemplate = () => {
         }, {});
         form.setFieldsValue(initValues);
     }, [buttons?.length]);
-
-    const templatesTypeOPtions = [
-        { label: "Rich Card", value: "rich_card" },
-        { label: "Text With Button", value: "text_with_button" }
-    ]
-
-
 
     const handleCreateTemplate = async (type) => {
         try {
@@ -78,7 +70,7 @@ const AddTemplate = () => {
                 const { data } = await axiosInstance.post("/templates/create", payload);
 
                 if (data.success) {
-                    message.success("Template created successfully!");  
+                    message.success("Template created successfully!");
                     navigate("/templates")
                 }
             } else if (type === "bulk") {
@@ -146,12 +138,6 @@ const AddTemplate = () => {
         setButtons(updatedButtons);
     };
 
-    const startAccountNumber = (e) => {
-        setStartAccountIndex(e.target.value)
-    }
-    const endAccountNumber = (e) => {
-        setEndAccountIndex(e.target.value)
-    }
 
     return (
         <PageContainer
@@ -241,9 +227,6 @@ const AddTemplate = () => {
                                 >
                                     <Input.TextArea
                                         rows={templateType === "rich_card" ? 12 : 6}
-                                        // onChange={(e) => handleFieldsChange(e.target.value, "title")}
-                                        //   value={title}
-                                        //   defaultValue={title}
                                         placeholder="Message"
                                         maxLength={999}
                                         showCount
@@ -276,14 +259,13 @@ const AddTemplate = () => {
                     <Flex gap={15} style={{ marginTop: 25, }} justify="flex-end">
                         <Form.Item
                             name={"start account number"}
-
                         >
-                            <Input size="default size" onChange={(e) => { startAccountNumber(e) }} type="number" style={{ width: '100%' }} placeholder="Start Account Number" />
+                            <Input size="default size" onChange={e => setStartAccountIndex(e.target.value)} type="number" style={{ width: '100%' }} placeholder="Start Account Number" />
                         </Form.Item>
                         <Form.Item
                             name={"end account number"}
                         >
-                            <Input size="default size" onChange={(e) => { endAccountNumber(e) }} type="number" style={{ width: '100%' }} placeholder="End Account Number" />
+                            <Input size="default size" onChange={e => setEndAccountIndex(e.target.value)} type="number" style={{ width: '100%' }} placeholder="End Account Number" />
                         </Form.Item>
 
                         <Button

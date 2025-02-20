@@ -24,7 +24,7 @@ const menu = {
 
       {
         path: "/campaign",
-        name: "Campaign",
+        name: "Campaigns",
       },
       {
         path: "/reports",

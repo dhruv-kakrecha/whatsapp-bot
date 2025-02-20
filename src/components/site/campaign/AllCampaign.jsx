@@ -1,77 +1,113 @@
-import { Button, Card, Flex, message, Popconfirm, Radio, Row, Table, Tooltip, Typography } from 'antd';
+import { Button, Card, Col, Flex, message, Popconfirm, Progress, Row, Table, Tooltip, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react'
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import TableActions from '../../common/TableActions';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import axiosInstance from '../../../axios/axiosInstance';
-
-const AllTemplates = ({
-    showDelete,
-    showSelect,
-    selectedTemplate,
-    setSelectedTemplate,
-}) => {
+const AllCampaign = () => {
 
     // const allTemplates = templateData.result.items
-    const [allTemplates, setAllTemplates] = useState([])
+    const [allCampaigns, setAllCampaigns] = useState([])
     const [loading, setLoading] = useState(false)
-    const [templateIds, setTemplatesIds] = useState([]);
+    const [campaignIds, setCampaignIds] = useState([]);
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
 
     });
 
-    const CLIENT_ID = useSelector(state => state?.auth?.user?.tenantId)
+    //const CLIENT_ID = useSelector(state => state?.auth?.user?.tenantId)
     const navigate = useNavigate()
 
-    const getTemplatesData = async () => {
+    const getCampaignsData = async () => {
         setLoading(true);
         try {
-            const { data } = await axiosInstance.get(`templates/${CLIENT_ID}/all`);
-            setAllTemplates(data?.templates);
+            // const { data } = await axiosInstance.get(`templates/${CLIENT_ID}/all`);
+            setAllCampaigns([
+                {
+                    "broadcastName": "test",
+                    "recipients": 2,
+                    "delivered": 100,
+                    "deliveredCount": 2,
+                    "read": 100,
+                    "readCount": 2,
+                    "repliedPercent": 0,
+                    "repliedCount": 0
+                },
+                {
+                    "broadcastName": "test",
+                    "recipients": 2,
+                    "delivered": 100,
+                    "deliveredCount": 2,
+                    "read": 100,
+                    "readCount": 2,
+                    "repliedPercent": 0,
+                    "repliedCount": 0
+                },
+                {
+                    "broadcastName": "test",
+                    "recipients": 2,
+                    "delivered": 100,
+                    "deliveredCount": 2,
+                    "read": 100,
+                    "readCount": 2,
+                    "repliedPercent": 0,
+                    "repliedCount": 0
+                },
+                {
+                    "broadcastName": "test",
+                    "recipients": 2,
+                    "delivered": 100,
+                    "deliveredCount": 2,
+                    "read": 100,
+                    "readCount": 2,
+                    "repliedPercent": 0,
+                    "repliedCount": 0
+                },
+            ]);
         } catch (error) {
             message.error(error.message);
         } finally {
-            setLoading(false);
+            setTimeout(() => {
+                setLoading(false);
+            }, 1500);
         }
     }
 
     useEffect(() => {
-        getTemplatesData();
+        getCampaignsData();
     }, [])
 
     const tableButtons = useMemo(() => {
         return [
-            ...(showSelect ? [] : [<Button danger type='primary' disabled={templateIds.length <= 0} onClick={() => handleMultipleDelete(templateIds)}>
+            <Button danger type='primary' disabled={campaignIds.length <= 0} onClick={() => handleMultipleDelete(campaignIds)}>
                 Delete Selected
-            </Button>]),
+            </Button>,
             <Button
                 type="primary"
                 key={"create_template"}
                 onClick={() => {
-                    navigate("/templates/add");
+                    navigate("/campaign/add");
                 }}
                 icon={<PlusCircleOutlined />}
             >
-                Create Template
+                Create Campaign
             </Button>,
         ];
-    }, [navigate, templateIds]);
+    }, [navigate, campaignIds]);
 
     const rowSelectionDelete = {
         onChange: (selectedRowKeys) => {
-            setTemplatesIds(selectedRowKeys);
+            setCampaignIds(selectedRowKeys);
         },
     };
 
     const handleMultipleDelete = async (userIds) => {
         try {
             // const { data } = await axiosInstance.post("/accounts/delete/multiple", { userIds })
-            message.success("Selected templates deleted successfully")
-            getTemplatesData();
+            message.success("Selected campaigns deleted successfully")
+            getCampaignsData();
         } catch (error) {
             message.error(error.message)
         }
@@ -79,8 +115,8 @@ const AllTemplates = ({
     const handleSingleDelete = async (userId) => {
         try {
             // const { data } = await axiosInstance.post("/accounts/delete/single", { userId })
-            message.success("template deleted successfully")
-            getTemplatesData();
+            message.success("Campaign deleted successfully")
+            getCampaignsData();
         } catch (error) {
             message.error(error.message)
         }
@@ -90,45 +126,70 @@ const AllTemplates = ({
         {
             title: "SN",
             width: 60,
-            render: (text, { _id, elementName }, index) => {
-                return (showSelect ? <Radio
-                    checked={selectedTemplate === elementName}
-                    onChange={() => setSelectedTemplate(elementName)}
-                    id={_id}
-                >
-                    {pagination.pageSize * (pagination.current - 1) + (index + 1)}
-                </Radio> : <>{pagination.pageSize * (pagination.current - 1) + (index + 1)}</>)
+            render: (text, record, index) => {
+                return (pagination.pageSize * (pagination.current - 1) + (index + 1))
             },
         },
         {
-            title: 'Name',
-            dataIndex: 'elementName',
-            key: 'elementName',
+            title: 'Campaign Name',
+            dataIndex: 'broadcastName',
+            key: 'broadcastName',
         },
         {
-            title: 'Category',
-            dataIndex: 'category',
-            key: 'category',
+            title: 'Total recipients',
+            dataIndex: 'recipients',
+            key: 'recipients',
+            render: (recipients) => `${recipients} Contacts`
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
+            title: 'Successful',
+            dataIndex: 'delivered',
+            key: 'delivered',
+            render: (percent) => {
+                return (
+                    <Progress
+                        percent={percent}
+                        percentPosition={{
+                            align: 'center',
+                            type: 'inner',
+                        }}
+                        size={[100, 20]}
+                    />
+                )
+            }
         },
         {
-            title: 'Language',
-            dataIndex: 'language',
-            key: 'language',
-            render: ({ text }) => text
+            title: 'Read',
+            dataIndex: 'read',
+            key: 'read',
+            render: (percent) => {
+                return (
+                    <Progress
+                        percent={percent}
+                        percentPosition={{
+                            align: 'center',
+                            type: 'inner',
+                        }}
+                        size={[100, 20]}
+                    />
+                )
+            }
         },
         {
-            title: 'Last Updated',
-            dataIndex: 'lastModified',
-            key: 'lastModified',
-            render: (text) => {
-                if (!text) return '-'; // Handle cases where the date might be undefined or null
-                const date = new Date(text);
-                return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+            title: 'Replied',
+            dataIndex: 'repliedCount',
+            key: 'repliedCount',
+            render: (percent, record, index) => {
+                return (
+                    <Progress
+                        percent={percent}
+                        percentPosition={{
+                            align: 'center',
+                            type: 'inner',
+                        }}
+                        size={[100, 20]}
+                    />
+                )
             }
         },
         {
@@ -179,17 +240,14 @@ const AllTemplates = ({
 
                     <Card>
                         <Table
-                            rowSelection={showDelete && rowSelectionDelete}
+                            rowSelection={rowSelectionDelete}
                             loading={loading}
                             columns={columns}
-                            dataSource={allTemplates}
-                            scroll={{
-                                x: 1200,
-                            }}
+                            dataSource={allCampaigns}
                             pagination={{
                                 current: pagination.current,
                                 pageSize: pagination.pageSize,
-                                total: allTemplates.length,
+                                total: allCampaigns.length,
                                 showSizeChanger: true,
                                 onChange: (page, pageSize) => {
                                     setPagination({ current: page, pageSize });
@@ -200,11 +258,8 @@ const AllTemplates = ({
                                 return (
                                     <Row >
                                         <Typography.Text style={{ marginRight: 10 }}>
-                                            {"Total"}: <b>{allTemplates.length}</b>
+                                            {"Total"}: <b>{allCampaigns.length}</b>
                                         </Typography.Text>
-                                        {showSelect && <Typography.Text>
-                                            {"Selected"}: <b>{selectedTemplate}</b>
-                                        </Typography.Text>}
                                     </Row>
                                 );
                             }}
@@ -216,4 +271,4 @@ const AllTemplates = ({
     )
 }
 
-export default AllTemplates
+export default AllCampaign
