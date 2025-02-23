@@ -32,7 +32,7 @@ const SingleAccount = () => {
 
 
     return (
-        <PageContainer title={`Account Import Reports : Total - ${accountReport?.total}`} loading={loading}>
+        <PageContainer title={`Account Import Reports ${(!loading && accountReport?.total > 0) ? ": Total " + accountReport?.total : ""}`} loading={loading}>
             <Card title={`Inserted - ${accountReport?.inserted?.length ?? 0}`}>
                 <List
                     key="inserted"
