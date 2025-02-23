@@ -6,6 +6,7 @@ import AddContacts from './AddContacts';
 import TableActions from '../../common/TableActions';
 import * as XLSX from "xlsx";
 import axiosInstance from '../../../axios/axiosInstance';
+import AddMultipleContacts from './AddMultipleContacts';
 
 
 const AllContacts = ({
@@ -15,9 +16,10 @@ const AllContacts = ({
     setSelectedContacts
 }) => {
 
-    const [contacts, setContacts] = useState([{}]);
+    const [contacts, setContacts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
+    const [addMultipleModal, setAddMultipleModal] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [singleData, setSingleData] = useState({});
     const [contactIds, setContactIds] = useState([]);
@@ -41,7 +43,7 @@ const AllContacts = ({
 
     const handleUpload = async (file) => {
         const isExcel =
-            file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || // .xlsx
+            file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
             file.type === "application/vnd.ms-excel"; // .xls
 
         if (!isExcel) {
@@ -54,11 +56,11 @@ const AllContacts = ({
         reader.onload = async (e) => {
             const binaryStr = e.target.result;
             const workbook = XLSX.read(binaryStr, { type: "binary" });
-            const sheetName = workbook.SheetNames[0]; // Get first sheet
+            const sheetName = workbook.SheetNames[0];
             const sheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-            const contacts = jsonData.map((row) => ({ phone: row.phone, countryCode: row.countryCode }));
+            const contacts = jsonData.map(({ phone, countryCode, name }) => ({ phone, countryCode, name }));
 
             console.log("contacts", contacts);
 
@@ -88,6 +90,13 @@ const AllContacts = ({
             onClick={() => setOpen(true)}
         >
             Add
+        </Button>,
+        <Button
+            key={"add-multiple"}
+            icon={<PlusCircleOutlined />}
+            onClick={() => setAddMultipleModal(true)}
+        >
+            Add Multiple
         </Button>,
         <Upload
             key={"import"}
@@ -218,47 +227,49 @@ const AllContacts = ({
         },
     ];
 
+    const handleMultipleContactsModalClose = () => {
+        setAddMultipleModal(false)
+    }
+
     return (
         <PageContainer
             title="Contacts"
         >
-            <ProCard>
-                <Flex style={{
-                    flexDirection: 'column',
-                    gap: "1rem",
-                    padding: "0 2.5rem"
-                }}>
-                    <TableActions buttons={tableButtons} />
+            <Flex style={{
+                flexDirection: 'column',
+                gap: "1rem",
+            }}>
+                <TableActions buttons={tableButtons} />
 
-                    <Card>
-                        <Table
-                            rowSelection={showSelect ? rowSelection : showDelete && rowSelectionDelete}
-                            loading={loading}
-                            columns={columns}
-                            dataSource={contacts}
-                            scroll={{
-                                x: 500,
-                            }}
-                            rowKey={({ phone, countryCode, _id }) => {
-                                return showDelete ? _id : countryCode + phone
-                            }}
-                            footer={() => {
-                                return (
-                                    <Row >
-                                        <Typography.Text style={{ marginRight: 10 }}>
-                                            {"Total"}: <b>{contacts.length}</b>
-                                        </Typography.Text>
-                                        <Typography.Text>
-                                            {showSelect && <>Selected : <b>{selectedContacts.length}</b></>}
-                                        </Typography.Text>
-                                    </Row>
-                                );
-                            }}
-                        />
-                    </Card>
-                </Flex>
-                <AddContacts open={open} handleSubmit={handleSubmit} handleCloseModal={handleCloseModal} isEdit={isEdit} singleData={singleData?.record} index={singleData?.index} />
-            </ProCard>
+                <Card>
+                    <Table
+                        rowSelection={showSelect ? rowSelection : showDelete && rowSelectionDelete}
+                        loading={loading}
+                        columns={columns}
+                        dataSource={contacts}
+                        scroll={{
+                            x: 500,
+                        }}
+                        rowKey={({ phone, countryCode, _id }) => {
+                            return showDelete ? _id : countryCode + phone
+                        }}
+                        footer={() => {
+                            return (
+                                <Row >
+                                    <Typography.Text style={{ marginRight: 10 }}>
+                                        {"Total"}: <b>{contacts.length}</b>
+                                    </Typography.Text>
+                                    <Typography.Text>
+                                        {showSelect && <>Selected : <b>{selectedContacts.length}</b></>}
+                                    </Typography.Text>
+                                </Row>
+                            );
+                        }}
+                    />
+                </Card>
+            </Flex>
+            <AddContacts open={open} handleSubmit={handleSubmit} handleCloseModal={handleCloseModal} isEdit={isEdit} singleData={singleData?.record} index={singleData?.index} />
+            <AddMultipleContacts open={addMultipleModal} handleClose={handleMultipleContactsModalClose} afterOk={getContactsData} />
         </PageContainer>
     )
 }

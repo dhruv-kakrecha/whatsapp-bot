@@ -82,27 +82,27 @@ const Accounts = () => {
             },
         },
         {
-            title: 'Inserted Accounts',
+            title: 'Total',
+            dataIndex: 'total',
+            key: 'total',
+        },
+        {
+            title: 'Inserted',
             dataIndex: 'inserted',
             key: 'inserted',
             render: (accounts) => accounts?.length ?? 0
         },
         {
-            title: 'Exist Accounts',
+            title: 'Exist',
             dataIndex: 'exist',
             key: 'exist',
             render: (accounts) => accounts.length ?? 0
         },
         {
-            title: 'Failed Accounts',
+            title: 'Failed',
             dataIndex: 'failed',
             key: 'failed',
             render: (accounts) => accounts?.length ?? 0
-        },
-        {
-            title: 'Total Accounts',
-            dataIndex: 'total',
-            key: 'total',
         },
         {
             title: 'Date, Time',

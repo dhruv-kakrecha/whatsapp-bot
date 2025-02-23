@@ -94,8 +94,6 @@ const Campaign = () => {
     <PageContainer
       title="Campaign"
     >
-
-      <ProCard>
         <Steps current={current} items={steps.map((item) => ({ key: item.title, title: item.title }))} />
         <div style={{ marginTop: 24 }}>{steps[current].content}</div>
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
@@ -114,7 +112,6 @@ const Campaign = () => {
             </Button>
           )}
         </div>
-      </ProCard>
     </PageContainer>
 
     // </Card>

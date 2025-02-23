@@ -21,7 +21,7 @@ const AllAccounts = ({
         account_status: "ALL",
         quality_rating: "ALL"
     })
-    const [allAccounts, setAllAccounts] = useState([{}]);
+    const [allAccounts, setAllAccounts] = useState([]);
     const [accountIds, setAccountIds] = useState([]);
 
     const getAccountData = async (query) => {
@@ -56,37 +56,44 @@ const AllAccounts = ({
 
 
     const handleUpload = async (file) => {
-        const isExcel =
-            file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || // .xlsx
-            file.type === "application/vnd.ms-excel"; // .xls
+        try {
+            const isExcel =
+                file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || // .xlsx
+                file.type === "application/vnd.ms-excel"; // .xls
 
-        if (!isExcel) {
-            message.error("Only Excel files (.xls, .xlsx) are allowed!");
-            return false;
-        }
-
-        const reader = new FileReader();
-
-        reader.onload = async (e) => {
-            const binaryStr = e.target.result;
-            const workbook = XLSX.read(binaryStr, { type: "binary" });
-            const sheetName = workbook.SheetNames[0]; // Get first sheet
-            const sheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-            // Format data to match desired JSON structure
-            const accounts = jsonData.map(({ name, phone, username, password, loginUrl }) => ({ name, phone, username, password, loginUrl }));
-
-
-            const { data } = await axiosInstance.post("accounts/add/bulk", { accounts })
-            if (data?.status) {
-                message.success("accounts added successfully")
+            if (!isExcel) {
+                message.error("Only Excel files (.xls, .xlsx) are allowed!");
+                return false;
             }
-            getAccountData(filters)
-        };
 
-        reader.readAsBinaryString(file);
-        return false;
+            const reader = new FileReader();
+
+            reader.onload = async (e) => {
+                const binaryStr = e.target.result;
+                const workbook = XLSX.read(binaryStr, { type: "binary" });
+                const sheetName = workbook.SheetNames[0]; // Get first sheet
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                // Format data to match desired JSON structure
+                const accounts = jsonData.map(({ name, phone, username, password, loginUrl }) => ({ name, phone, username, password, loginUrl }));
+
+                setLoading(true);
+                const { data } = await axiosInstance.post("accounts/add/bulk", { accounts })
+                if (data?.status) {
+                    message.success("accounts added successfully")
+                }
+                getAccountData(filters)
+            };
+
+            reader.readAsBinaryString(file);
+            return false;
+
+        } catch (error) {
+            message.error(error.message)
+        } finally {
+            setLoading(false);
+        }
     };
 
     const rowSelection = {
@@ -226,11 +233,9 @@ const AllAccounts = ({
         <PageContainer
             title="Accounts"
         >
-            <ProCard>
                 <Flex style={{
                     flexDirection: 'column',
                     gap: "1rem",
-                    padding: "0 2.5rem"
                 }}>
                     <TableActions buttons={tableButtons} />
 
@@ -309,7 +314,6 @@ const AllAccounts = ({
 
                     </Form>
                 </Modal>
-            </ProCard>
         </PageContainer>
     )
 }

@@ -17,11 +17,10 @@ const menu = {
         path: "/templates",
         name: "Templates",
       },
-      {
-        path: "/contacts",
-        name: "Contacts",
-      },
-
+      // {
+      //   path: "/contacts",
+      //   name: "Contacts",
+      // },
       {
         path: "/campaign",
         name: "Campaigns",
@@ -38,10 +37,10 @@ const menu = {
             path: "templates",
             name: "Templates",
           },
-          {
-            path: "contacts",
-            name: "Contacts",
-          },
+          // {
+          //   path: "contacts",
+          //   name: "Contacts",
+          // },
         ]
       },
 

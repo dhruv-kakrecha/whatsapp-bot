@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axiosInstance from '../../../../axios/axiosInstance'
 import { PageContainer, ProCard } from '@ant-design/pro-components'
-import { List, message, Typography } from 'antd'
+import { Card, List, message, Typography } from 'antd'
 
 const SingleAccount = () => {
 
@@ -32,20 +32,39 @@ const SingleAccount = () => {
 
 
     return (
-        <PageContainer
-            title="Reports"
-            loading={loading}
-        >
-            <ProCard>
+        <PageContainer title={`Account Import Reports : Total - ${accountReport?.total}`} loading={loading}>
+            <Card title={`Inserted - ${accountReport?.inserted?.length ?? 0}`}>
                 <List
-                    dataSource={accountReport?.inserted}
-                    renderItem={(item) => (
-                        <List.Item> {item} </List.Item>
+                    key="inserted"
+                    dataSource={accountReport?.inserted || ["No Data"]} // Ensure it is always an array
+                    renderItem={(item, index) => (
+                        <List.Item key={index}>{item}</List.Item>
                     )}
                     bordered
                 />
-            </ProCard>
+            </Card>
+            <Card title={`Exist - ${accountReport?.exists?.length ?? 0}`}>
+                <List
+                    key="exists"
+                    dataSource={accountReport?.exists || ["No Data"]} // Corrected to use 'exists'
+                    renderItem={(item, index) => (
+                        <List.Item key={index}>{item}</List.Item>
+                    )}
+                    bordered
+                />
+            </Card>
+            <Card title={`Failed - ${accountReport?.failed?.length ?? 0}`}>
+                <List
+                    key="failed"
+                    dataSource={accountReport?.failed || ["No Data"]} // Corrected to use 'exists'
+                    renderItem={(item, index) => (
+                        <List.Item key={index}>{item}</List.Item>
+                    )}
+                    bordered
+                />
+            </Card>
         </PageContainer>
+
     )
 }
 

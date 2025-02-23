@@ -24,48 +24,6 @@ const AllCampaign = () => {
         setLoading(true);
         try {
             // const { data } = await axiosInstance.get(`templates/${CLIENT_ID}/all`);
-            setAllCampaigns([
-                {
-                    "broadcastName": "test",
-                    "recipients": 2,
-                    "delivered": 100,
-                    "deliveredCount": 2,
-                    "read": 100,
-                    "readCount": 2,
-                    "repliedPercent": 0,
-                    "repliedCount": 0
-                },
-                {
-                    "broadcastName": "test",
-                    "recipients": 2,
-                    "delivered": 100,
-                    "deliveredCount": 2,
-                    "read": 100,
-                    "readCount": 2,
-                    "repliedPercent": 0,
-                    "repliedCount": 0
-                },
-                {
-                    "broadcastName": "test",
-                    "recipients": 2,
-                    "delivered": 100,
-                    "deliveredCount": 2,
-                    "read": 100,
-                    "readCount": 2,
-                    "repliedPercent": 0,
-                    "repliedCount": 0
-                },
-                {
-                    "broadcastName": "test",
-                    "recipients": 2,
-                    "delivered": 100,
-                    "deliveredCount": 2,
-                    "read": 100,
-                    "readCount": 2,
-                    "repliedPercent": 0,
-                    "repliedCount": 0
-                },
-            ]);
         } catch (error) {
             message.error(error.message);
         } finally {
@@ -226,13 +184,11 @@ const AllCampaign = () => {
 
     return (
         <PageContainer
-            title="Templates"
+            title="Campaigns"
         >
-            <ProCard>
                 <Flex style={{
                     flexDirection: 'column',
                     gap: "1rem",
-                    padding: "0 2.5rem"
                 }}>
                     <TableActions
                         buttons={tableButtons}
@@ -266,7 +222,6 @@ const AllCampaign = () => {
                         />
                     </Card>
                 </Flex>
-            </ProCard>
         </PageContainer>
     )
 }

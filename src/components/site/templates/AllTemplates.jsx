@@ -167,51 +167,48 @@ const AllTemplates = ({
         <PageContainer
             title="Templates"
         >
-            <ProCard>
-                <Flex style={{
-                    flexDirection: 'column',
-                    gap: "1rem",
-                    padding: "0 2.5rem"
-                }}>
-                    <TableActions
-                        buttons={tableButtons}
-                    />
+            <Flex style={{
+                flexDirection: 'column',
+                gap: "1rem",
+            }}>
+                <TableActions
+                    buttons={tableButtons}
+                />
 
-                    <Card>
-                        <Table
-                            rowSelection={showDelete && rowSelectionDelete}
-                            loading={loading}
-                            columns={columns}
-                            dataSource={allTemplates}
-                            scroll={{
-                                x: 1200,
-                            }}
-                            pagination={{
-                                current: pagination.current,
-                                pageSize: pagination.pageSize,
-                                total: allTemplates.length,
-                                showSizeChanger: true,
-                                onChange: (page, pageSize) => {
-                                    setPagination({ current: page, pageSize });
-                                },
-                            }}
-                            rowKey={(record) => record?.id}
-                            footer={() => {
-                                return (
-                                    <Row >
-                                        <Typography.Text style={{ marginRight: 10 }}>
-                                            {"Total"}: <b>{allTemplates.length}</b>
-                                        </Typography.Text>
-                                        {showSelect && <Typography.Text>
-                                            {"Selected"}: <b>{selectedTemplate}</b>
-                                        </Typography.Text>}
-                                    </Row>
-                                );
-                            }}
-                        />
-                    </Card>
-                </Flex>
-            </ProCard>
+                <Card>
+                    <Table
+                        rowSelection={showDelete && rowSelectionDelete}
+                        loading={loading}
+                        columns={columns}
+                        dataSource={allTemplates}
+                        scroll={{
+                            x: 1200,
+                        }}
+                        pagination={{
+                            current: pagination.current,
+                            pageSize: pagination.pageSize,
+                            total: allTemplates.length,
+                            showSizeChanger: true,
+                            onChange: (page, pageSize) => {
+                                setPagination({ current: page, pageSize });
+                            },
+                        }}
+                        rowKey={(record) => record?.id}
+                        footer={() => {
+                            return (
+                                <Row >
+                                    <Typography.Text style={{ marginRight: 10 }}>
+                                        {"Total"}: <b>{allTemplates.length}</b>
+                                    </Typography.Text>
+                                    {showSelect && <Typography.Text>
+                                        {"Selected"}: <b>{selectedTemplate}</b>
+                                    </Typography.Text>}
+                                </Row>
+                            );
+                        }}
+                    />
+                </Card>
+            </Flex>
         </PageContainer>
     )
 }
