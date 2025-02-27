@@ -1,10 +1,13 @@
-import { Button, Card, Col, Flex, message, Popconfirm, Progress, Row, Table, Tooltip, Typography } from 'antd';
+import { Button, Card, Col, Flex, message, Popconfirm, Progress, Row, Space, Table, Tooltip, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react'
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import TableActions from '../../common/TableActions';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../axios/axiosInstance';
+
+
+const { Text } = Typography
 const AllCampaign = () => {
 
     // const allTemplates = templateData.result.items
@@ -23,7 +26,10 @@ const AllCampaign = () => {
     const getCampaignsData = async () => {
         setLoading(true);
         try {
-            // const { data } = await axiosInstance.get(`templates/${CLIENT_ID}/all`);
+            const { data } = await axiosInstance.get("/messages/campaigns");
+            if (data?.success) {
+                setAllCampaigns(data.campaigns);
+            }
         } catch (error) {
             message.error(error.message);
         } finally {
@@ -90,66 +96,83 @@ const AllCampaign = () => {
         },
         {
             title: 'Campaign Name',
-            dataIndex: 'broadcastName',
-            key: 'broadcastName',
+            dataIndex: 'name',
+            key: 'name',
+            render: (name, record) => <Link to={record?._id}>{name}</Link>
+        },
+        {
+            title: 'Template',
+            dataIndex: 'selectedTemplateName',
+            key: 'selectedTemplateName',
         },
         {
             title: 'Total recipients',
-            dataIndex: 'recipients',
-            key: 'recipients',
+            dataIndex: 'totalContacts',
+            key: 'totalContacts',
             render: (recipients) => `${recipients} Contacts`
         },
         {
             title: 'Successful',
-            dataIndex: 'delivered',
-            key: 'delivered',
-            render: (percent) => {
+            dataIndex: 'successCount',
+            key: 'successCount',
+            render: (count, record) => {
+                const percent = ((count * 100) / record.totalContacts)
+
                 return (
-                    <Progress
-                        percent={percent}
-                        percentPosition={{
-                            align: 'center',
-                            type: 'inner',
-                        }}
-                        size={[100, 20]}
-                    />
+                    <Space direction='vertical'>
+                        <Text>{count} contacts </Text>
+                        <Progress
+                            percent={percent ?? 0}
+                            percentPosition={{
+                                align: 'center',
+                                type: 'inner',
+                            }}
+                            size={[100, 20]}
+                            strokeColor={percent === 0 ? "#CCFFCC" : "green"}
+                        />
+                    </Space>
                 )
             }
         },
         {
-            title: 'Read',
-            dataIndex: 'read',
-            key: 'read',
-            render: (percent) => {
+            title: 'Failed',
+            dataIndex: 'failedCount',
+            key: 'failedCount',
+            render: (count, record) => {
+                const percent = ((count * 100) / record.totalContacts)
                 return (
-                    <Progress
-                        percent={percent}
-                        percentPosition={{
-                            align: 'center',
-                            type: 'inner',
-                        }}
-                        size={[100, 20]}
-                    />
+                    <Space direction='vertical'>
+                        <Text>{count} contacts </Text>
+                        <Progress
+                            percent={percent ?? 0}
+                            percentPosition={{
+                                align: 'center',
+                                type: 'inner',
+                            }}
+                            size={[100, 20]}
+                            strokeColor={percent === 0 ? "#FFCCCC" : "#FF6666"}
+                        />
+                    </Space>
                 )
             }
         },
-        {
-            title: 'Replied',
-            dataIndex: 'repliedCount',
-            key: 'repliedCount',
-            render: (percent, record, index) => {
-                return (
-                    <Progress
-                        percent={percent}
-                        percentPosition={{
-                            align: 'center',
-                            type: 'inner',
-                        }}
-                        size={[100, 20]}
-                    />
-                )
-            }
-        },
+        // {
+        //     title: 'Replied',
+        //     dataIndex: 'repliedCount',
+        //     key: 'repliedCount',
+        //     render: (percent, record, index) => {
+        //         return (
+        //             <Progress
+        //                 percent={percent}
+        //                 percentPosition={{
+        //                     align: 'center',
+        //                     type: 'inner',
+        //                 }}
+        //                 size={[100, 20]}
+        //             />
+        //         )
+        //     }
+        // },
         {
             title: "Actions",
             key: "action",
@@ -186,42 +209,42 @@ const AllCampaign = () => {
         <PageContainer
             title="Campaigns"
         >
-                <Flex style={{
-                    flexDirection: 'column',
-                    gap: "1rem",
-                }}>
-                    <TableActions
-                        buttons={tableButtons}
-                    />
+            <Flex style={{
+                flexDirection: 'column',
+                gap: "1rem",
+            }}>
+                <TableActions
+                    buttons={tableButtons}
+                />
 
-                    <Card>
-                        <Table
-                            rowSelection={rowSelectionDelete}
-                            loading={loading}
-                            columns={columns}
-                            dataSource={allCampaigns}
-                            pagination={{
-                                current: pagination.current,
-                                pageSize: pagination.pageSize,
-                                total: allCampaigns.length,
-                                showSizeChanger: true,
-                                onChange: (page, pageSize) => {
-                                    setPagination({ current: page, pageSize });
-                                },
-                            }}
-                            rowKey={(record) => record?.id}
-                            footer={() => {
-                                return (
-                                    <Row >
-                                        <Typography.Text style={{ marginRight: 10 }}>
-                                            {"Total"}: <b>{allCampaigns.length}</b>
-                                        </Typography.Text>
-                                    </Row>
-                                );
-                            }}
-                        />
-                    </Card>
-                </Flex>
+                <Card>
+                    <Table
+                        rowSelection={rowSelectionDelete}
+                        loading={loading}
+                        columns={columns}
+                        dataSource={allCampaigns}
+                        pagination={{
+                            current: pagination.current,
+                            pageSize: pagination.pageSize,
+                            total: allCampaigns.length,
+                            showSizeChanger: true,
+                            onChange: (page, pageSize) => {
+                                setPagination({ current: page, pageSize });
+                            },
+                        }}
+                        rowKey={(record) => record?.id}
+                        footer={() => {
+                            return (
+                                <Row >
+                                    <Typography.Text style={{ marginRight: 10 }}>
+                                        {"Total"}: <b>{allCampaigns.length}</b>
+                                    </Typography.Text>
+                                </Row>
+                            );
+                        }}
+                    />
+                </Card>
+            </Flex>
         </PageContainer>
     )
 }

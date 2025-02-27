@@ -161,45 +161,43 @@ const Accounts = () => {
         <PageContainer
             title="Accounts Reports"
         >
-            <ProCard>
-                <Flex style={{
-                    flexDirection: 'column',
-                    gap: "1rem",
-                    padding: "0 2.5rem"
-                }}>
-                    <TableActions
-                        buttons={tableButtons}
-                    />
+            <Flex style={{
+                flexDirection: 'column',
+                gap: "1rem",
+                padding: "0 2.5rem"
+            }}>
+                <TableActions
+                    buttons={tableButtons}
+                />
 
-                    <Card>
-                        <Table
-                            rowSelection={rowSelectionDelete}
-                            loading={loading}
-                            columns={columns}
-                            dataSource={reports}
-                            pagination={{
-                                current: pagination.current,
-                                pageSize: pagination.pageSize,
-                                total: reports.length,
-                                showSizeChanger: true,
-                                onChange: (page, pageSize) => {
-                                    setPagination({ current: page, pageSize });
-                                },
-                            }}
-                            rowKey={(record) => record?._id}
-                            footer={() => {
-                                return (
-                                    <Row >
-                                        <Typography.Text style={{ marginRight: 10 }}>
-                                            {"Total"}: <b>{reports.length}</b>
-                                        </Typography.Text>
-                                    </Row>
-                                );
-                            }}
-                        />
-                    </Card>
-                </Flex>
-            </ProCard>
+                <Card>
+                    <Table
+                        rowSelection={rowSelectionDelete}
+                        loading={loading}
+                        columns={columns}
+                        dataSource={reports}
+                        pagination={{
+                            current: pagination.current,
+                            pageSize: pagination.pageSize,
+                            total: reports.length,
+                            showSizeChanger: true,
+                            onChange: (page, pageSize) => {
+                                setPagination({ current: page, pageSize });
+                            },
+                        }}
+                        rowKey={(record) => record?._id}
+                        footer={() => {
+                            return (
+                                <Row >
+                                    <Typography.Text style={{ marginRight: 10 }}>
+                                        {"Total"}: <b>{reports.length}</b>
+                                    </Typography.Text>
+                                </Row>
+                            );
+                        }}
+                    />
+                </Card>
+            </Flex>
         </PageContainer>
     )
 }

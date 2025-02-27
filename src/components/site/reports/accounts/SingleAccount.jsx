@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import axiosInstance from '../../../../axios/axiosInstance'
 import { PageContainer, ProCard } from '@ant-design/pro-components'
-import { Card, List, message, Typography } from 'antd'
+import { Card, List, message, Table, Tabs, Typography } from 'antd'
 
 const SingleAccount = () => {
 
     const [accountReport, setAccountReport] = useState(null)
     const [loading, setLoading] = useState(false)
     const { id } = useParams()
-    const { Text } = Typography
+    const [activeKey, setActiveKey] = useState("inserted")
 
     const getAccountReport = async () => {
         try {
@@ -29,40 +29,74 @@ const SingleAccount = () => {
         getAccountReport()
     }, [id])
 
+    const tabItems = [
+        {
+            label: `Inserted (${accountReport?.inserted?.length ?? 0})`,
+            key: "inserted"
+        },
+        {
+            label: `Exists (${accountReport?.exist?.length ?? 0})`,
+            key: "exists"
+        },
+        {
+            label: `Failed (${accountReport?.failed?.length ?? 0})`,
+            key: "failed"
+        },
+    ]
 
+    const tableData = useMemo(() => {
+        if (!accountReport) return []
+        return accountReport[activeKey] ?? []
+    }, [accountReport , activeKey])
+
+    const columns = [
+        {
+            title: "SN",
+            width: 60,
+            key: "sn",
+            render: (text, record, index) => index + 1,
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            render: (name) => name ?? "-",
+        },
+        {
+            title: 'Phone',
+            dataIndex: 'phone',
+            key: 'phone',
+            render: (phone) => phone ?? "-",
+        },
+        {
+            title: 'Username',
+            dataIndex: 'username',
+            key: 'username',
+            render: (username) => username ?? "-",
+        },
+        {
+            title: 'Password',
+            dataIndex: 'password',
+            key: 'password',
+            render: (password) => password ?? "-",
+        },
+        {
+            title: 'Login URL',
+            dataIndex: 'loginUrl',
+            key: 'loginUrl',
+            render: (loginUrl) => <Link to={loginUrl}>{loginUrl} </Link> ?? "-",
+        },
+    ];
 
     return (
         <PageContainer title={`Account Import Reports ${(!loading && accountReport?.total > 0) ? ": Total " + accountReport?.total : ""}`} loading={loading}>
-            <Card title={`Inserted - ${accountReport?.inserted?.length ?? 0}`}>
-                <List
-                    key="inserted"
-                    dataSource={accountReport?.inserted || ["No Data"]} // Ensure it is always an array
-                    renderItem={(item, index) => (
-                        <List.Item key={index}>{item}</List.Item>
-                    )}
-                    bordered
-                />
-            </Card>
-            <Card title={`Exist - ${accountReport?.exists?.length ?? 0}`}>
-                <List
-                    key="exists"
-                    dataSource={accountReport?.exists || ["No Data"]} // Corrected to use 'exists'
-                    renderItem={(item, index) => (
-                        <List.Item key={index}>{item}</List.Item>
-                    )}
-                    bordered
-                />
-            </Card>
-            <Card title={`Failed - ${accountReport?.failed?.length ?? 0}`}>
-                <List
-                    key="failed"
-                    dataSource={accountReport?.failed || ["No Data"]} // Corrected to use 'exists'
-                    renderItem={(item, index) => (
-                        <List.Item key={index}>{item}</List.Item>
-                    )}
-                    bordered
-                />
-            </Card>
+            <Tabs type='card' items={tabItems} activeKey={activeKey} onChange={setActiveKey} />
+
+            <Table
+                columns={columns}
+                dataSource={tableData}
+            />
+
         </PageContainer>
 
     )

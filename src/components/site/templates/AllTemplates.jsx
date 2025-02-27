@@ -30,7 +30,7 @@ const AllTemplates = ({
     const getTemplatesData = async () => {
         setLoading(true);
         try {
-            const { data } = await axiosInstance.get(`templates/${CLIENT_ID}/all`);
+            const { data } = await axiosInstance.get(`templates/all`);
             setAllTemplates(data?.templates);
         } catch (error) {
             message.error(error.message);
