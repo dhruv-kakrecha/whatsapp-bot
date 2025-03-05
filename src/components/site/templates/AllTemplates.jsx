@@ -6,6 +6,7 @@ import TableActions from '../../common/TableActions';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../../../axios/axiosInstance';
+import { render } from 'react-dom';
 
 const AllTemplates = ({
     showDelete,
@@ -90,10 +91,10 @@ const AllTemplates = ({
         {
             title: "SN",
             width: 60,
-            render: (text, { _id, elementName }, index) => {
+            render: (text, { _id, name }, index) => {
                 return (showSelect ? <Radio
-                    checked={selectedTemplate === elementName}
-                    onChange={() => setSelectedTemplate(elementName)}
+                    checked={selectedTemplate === name}
+                    onChange={() => setSelectedTemplate(name)}
                     id={_id}
                 >
                     {pagination.pageSize * (pagination.current - 1) + (index + 1)}
@@ -102,34 +103,26 @@ const AllTemplates = ({
         },
         {
             title: 'Name',
-            dataIndex: 'elementName',
-            key: 'elementName',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
-            title: 'Category',
-            dataIndex: 'category',
-            key: 'category',
+            title: 'Success',
+            dataIndex: 'successCount',
+            key: 'successCount',
+            render: (count) => `${count} Accounts`
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
+            title: 'Failed',
+            dataIndex: 'failedCount',
+            key: 'failedCount',
+            render: (count) => `${count} Accounts`
         },
         {
-            title: 'Language',
-            dataIndex: 'language',
-            key: 'language',
-            render: ({ text }) => text
-        },
-        {
-            title: 'Last Updated',
-            dataIndex: 'lastModified',
-            key: 'lastModified',
-            render: (text) => {
-                if (!text) return '-'; // Handle cases where the date might be undefined or null
-                const date = new Date(text);
-                return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-            }
+            title: 'Date',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (date) => new Date(date).toLocaleString()
         },
         {
             title: "Actions",
@@ -193,7 +186,7 @@ const AllTemplates = ({
                                 setPagination({ current: page, pageSize });
                             },
                         }}
-                        rowKey={(record) => record?.id}
+                        rowKey={(record) => record?._id}
                         footer={() => {
                             return (
                                 <Row >

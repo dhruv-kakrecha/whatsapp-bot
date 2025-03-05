@@ -13,10 +13,10 @@ const menu = {
         path: "/accounts",
         name: "Accounts",
       },
-      // {
-      //   path: "/templates",
-      //   name: "Templates",
-      // },
+      {
+        path: "/templates",
+        name: "Templates",
+      },
       // {
       //   path: "/contacts",
       //   name: "Contacts",
