@@ -77,8 +77,10 @@ const AddTemplate = () => {
                 const { data } = await axiosInstance.post("/templates/create/bulk", { template: payload, "startAccountIndex": startAccountIndex, "endAccountIndex": endAccountIndex });
 
                 if (data.success) {
-                    message.success("Template created for all accounts!");
+                    message.success(data?.message);
                     navigate("/templates")
+                } else {
+                    message.error(data?.message ?? "Failed to create templates for all accounts!");
                 }
             }
         } catch (error) {

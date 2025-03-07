@@ -19,6 +19,7 @@ const AllTemplates = ({
     const [allTemplates, setAllTemplates] = useState([])
     const [loading, setLoading] = useState(false)
     const [templateIds, setTemplatesIds] = useState([]);
+    const [submittingIds, setSubmittingIds] = useState([]);
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
@@ -87,6 +88,25 @@ const AllTemplates = ({
         }
     }
 
+    const handleSubmitForReview = async (record) => {
+        setSubmittingIds(prev => [...prev, record._id])
+
+        try {
+            const { data } = await axiosInstance.post("/templates/review/submit", {
+                template_name: record.name
+            })
+            if (data.success) {
+                message.success(data.message)
+            } else {
+                message.error(data.message)
+            }
+        } catch (error) {
+            message.error(error.message)
+        } finally {
+            setSubmittingIds(prev => prev.filter(id => id !== record._id))
+        }
+    }
+
     const columns = [
         {
             title: "SN",
@@ -128,10 +148,19 @@ const AllTemplates = ({
             title: "Actions",
             key: "action",
             fixed: "right",
-            width: 100,
-            render: (_, record, index) => (
+            width: 250,
+            render: (_, record) => (
                 <Flex gap="small" vertical>
                     <Flex wrap gap="small">
+                        <Button
+                            type='primary'
+                            onClick={() => handleSubmitForReview(record)}
+                            loading={submittingIds.includes(record._id)}
+                            disabled={submittingIds.includes(record._id)}
+
+                        >
+                            {submittingIds.includes(record._id) ? "Submitting" : "Submit For Review"}
+                        </Button>
                         <Tooltip
                             color="red"
                             title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}

@@ -156,23 +156,6 @@ const AllCampaign = () => {
                 )
             }
         },
-        // {
-        //     title: 'Replied',
-        //     dataIndex: 'repliedCount',
-        //     key: 'repliedCount',
-        //     render: (percent, record, index) => {
-        //         return (
-        //             <Progress
-        //                 percent={percent}
-        //                 percentPosition={{
-        //                     align: 'center',
-        //                     type: 'inner',
-        //                 }}
-        //                 size={[100, 20]}
-        //             />
-        //         )
-        //     }
-        // },
         {
             title: "Actions",
             key: "action",

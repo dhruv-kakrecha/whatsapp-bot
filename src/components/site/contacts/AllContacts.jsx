@@ -157,7 +157,7 @@ const AllContacts = ({
     const rowSelection = {
         selectedRowKeys: selectedContacts,
         onChange: (selectedRowKeys, selectedRows) => {
-            setSelectedContacts(selectedRows.map(({ phone, countryCode }) => countryCode + phone))
+            setSelectedContacts(selectedRows.map(({ phone, countryCode }) => `+${countryCode}${phone}`))
             console.log("selectedRowKeys", selectedRowKeys);
         },
     };
