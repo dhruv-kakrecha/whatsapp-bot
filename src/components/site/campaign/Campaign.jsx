@@ -82,7 +82,11 @@ const Campaign = () => {
           receivers: selectedContacts.map((contact) => ({ whatsappNumber: contact }))
         }
         const { data } = await axiosInstance.post("/messages/send/bulk", payload)
-        message.success("message sent successfully")
+        if (data.success) {
+          message.success(data?.message);
+        } else {
+          message.error(data?.message)
+        }
       } catch (error) {
         message.error(error.message)
       }
@@ -94,24 +98,24 @@ const Campaign = () => {
     <PageContainer
       title="Campaign"
     >
-        <Steps current={current} items={steps.map((item) => ({ key: item.title, title: item.title }))} />
-        <div style={{ marginTop: 24 }}>{steps[current].content}</div>
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
-          {current > 0 && (
-            <Button style={{ marginRight: 8 }} onClick={prev}>
-              Back
-            </Button>
-          )}
-          {current < steps.length - 1 ? (
-            <Button type="primary" onClick={next}>
-              Next
-            </Button>
-          ) : (
-            <Button type="primary" onClick={handleSendMessage}>
-              Send Message
-            </Button>
-          )}
-        </div>
+      <Steps current={current} items={steps.map((item) => ({ key: item.title, title: item.title }))} />
+      <div style={{ marginTop: 24 }}>{steps[current].content}</div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
+        {current > 0 && (
+          <Button style={{ marginRight: 8 }} onClick={prev}>
+            Back
+          </Button>
+        )}
+        {current < steps.length - 1 ? (
+          <Button type="primary" onClick={next}>
+            Next
+          </Button>
+        ) : (
+          <Button type="primary" onClick={handleSendMessage}>
+            Send Message
+          </Button>
+        )}
+      </div>
     </PageContainer>
 
     // </Card>

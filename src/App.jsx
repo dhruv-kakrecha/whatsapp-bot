@@ -19,7 +19,7 @@ import SingleCampaign from "./components/site/campaign/SingleCampaign";
 
 function App() {
 
-  const { isLoggedIn } = useSelector(state => state.auth)
+  const { isLoggedIn , token } = useSelector(state => state.auth)
   const RouteWrapper = ({ component: Component, ...props }) => {
     RouteWrapper.propTypes = {
       component: PropTypes.elementType.isRequired,
@@ -33,7 +33,7 @@ function App() {
 
   return (
     <>
-      {isLoggedIn ? (
+      {(isLoggedIn && token) ? (
         <Routes>
           <Route exact path="*" element={<>Not Found</>} />
           <Route exact path="/" element={<RouteWrapper component={AllAccounts} showDelete />} />
@@ -53,7 +53,7 @@ function App() {
 
           <Route exact path="/reports/accounts" element={<RouteWrapper component={Accounts} />} />
           <Route exact path="/reports/accounts/:id" element={<RouteWrapper component={SingleAccount} />} />
-\
+          
           <Route exact path="/reports/templates/:id" element={<RouteWrapper component={SingleTemplate} />} />
           <Route exact path="/reports/templates" element={<RouteWrapper component={Templates} />} />
           <Route exact path="/reports" element={<RouteWrapper component={Reports} />} />

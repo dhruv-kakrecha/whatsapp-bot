@@ -3,12 +3,10 @@ import { Button, Col, Flex, Form, Input, message, Row, Select, Space, Typography
 import Buttons from "./Buttons";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import axiosInstance from "../../../axios/axiosInstance";
 import UploadMedia from "./UploadMedia";
 
 const AddTemplate = () => {
-    const CLIENT_ID = useSelector(state => state.auth.user.tenantId)
     const navigate = useNavigate()
     const [buttons, setButtons] = useState([
         {
@@ -25,6 +23,7 @@ const AddTemplate = () => {
     const [templateType, setTemplateType] = useState("rich_card")
     const { Text } = Typography
     const [form] = Form.useForm();
+
 
     useEffect(() => {
         const initValues = buttons?.reduce((acc, button, index) => {
@@ -50,7 +49,6 @@ const AddTemplate = () => {
                 .join("_and_");
             const formData = await form.validateFields();
 
-            // Create the payload
             let payload = {
                 id: "",
                 type: "template",
@@ -65,23 +63,13 @@ const AddTemplate = () => {
                 language: "en",
             };
 
-            if (type === "single") {
-                payload.client_id = CLIENT_ID
-                const { data } = await axiosInstance.post("/templates/create", payload);
+            const { data } = await axiosInstance.post("/templates/create/bulk", { template: payload, "startAccountIndex": startAccountIndex, "endAccountIndex": endAccountIndex });
 
-                if (data.success) {
-                    message.success("Template created successfully!");
-                    navigate("/templates")
-                }
-            } else if (type === "bulk") {
-                const { data } = await axiosInstance.post("/templates/create/bulk", { template: payload, "startAccountIndex": startAccountIndex, "endAccountIndex": endAccountIndex });
-
-                if (data.success) {
-                    message.success(data?.message);
-                    navigate("/templates")
-                } else {
-                    message.error(data?.message ?? "Failed to create templates for all accounts!");
-                }
+            if (data.success) {
+                message.success(data?.message);
+                navigate("/templates")
+            } else {
+                message.error(data?.message ?? "Failed to create templates for all accounts!");
             }
         } catch (error) {
             if (error.errorFields) {
@@ -269,17 +257,6 @@ const AddTemplate = () => {
                         >
                             <Input size="default size" onChange={e => setEndAccountIndex(e.target.value)} type="number" style={{ width: '100%' }} placeholder="End Account Number" />
                         </Form.Item>
-
-                        <Button
-                            type="primary"
-                            style={{
-                                padding: "10px 30px",
-
-                            }}
-                            onClick={() => handleCreateTemplate("single")}
-                        >
-                            Create
-                        </Button>
 
                         <Button
                             type="primary"

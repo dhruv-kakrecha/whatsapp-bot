@@ -1,7 +1,7 @@
-import { Button, Card, Col, Flex, message, Popconfirm, Progress, Row, Space, Table, Tooltip, Typography } from 'antd';
+import { Button, Card, Flex, message, Popconfirm, Progress, Row, Space, Table, Tooltip, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react'
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { PageContainer, ProCard } from '@ant-design/pro-components';
+import { PageContainer } from '@ant-design/pro-components';
 import TableActions from '../../common/TableActions';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../axios/axiosInstance';
@@ -20,7 +20,6 @@ const AllCampaign = () => {
 
     });
 
-    //const CLIENT_ID = useSelector(state => state?.auth?.user?.tenantId)
     const navigate = useNavigate()
 
     const getCampaignsData = async () => {

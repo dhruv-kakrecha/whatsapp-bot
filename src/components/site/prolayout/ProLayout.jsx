@@ -1,22 +1,40 @@
 /* eslint-disable react/prop-types */
 
 import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from "@ant-design/icons";
-import { PageContainer, ProCard, ProConfigProvider, ProLayout } from "@ant-design/pro-components";
+import { ProConfigProvider, ProLayout } from "@ant-design/pro-components";
 import defaultProps from "./DefaultProps";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Avatar, ConfigProvider, Dropdown, Tooltip } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { Avatar, ConfigProvider, Dropdown, message, Tooltip } from "antd";
+import { useDispatch } from "react-redux";
 import { logout } from "../../../redux/auth/authSlice";
+import axiosInstance from "../../../axios/axiosInstance";
 
 function ProLayoutWrapper({ children }) {
   const [pathname, setPathname] = useState("/welcome");
+  const [loading, setloading] = useState(false);
   const [collapsed, setCollapsed] = useState(true);
-  const userName = useSelector(state => state.auth.user.fullName)
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const handleVerifyUser = async () => {
+    try {
+      setloading(true);
+
+      const { data } = await axiosInstance.get("/auth/verify");
+      if (!data.success) {
+        dispatch(logout())
+      }
+    } catch (error) {
+      message.error(error.message)
+    } finally {
+      setloading(false);
+    }
+  }
+
+  useEffect(() => {
+    handleVerifyUser();
+  }, [dispatch])
 
   const props = {
     ...defaultProps,
@@ -76,7 +94,6 @@ function ProLayoutWrapper({ children }) {
           avatarProps={{
             src: <Avatar icon={<UserOutlined />} />,
             size: "small",
-            title: userName,
             render: (props, dom) => {
               return (
                 <Dropdown
@@ -112,16 +129,9 @@ function ProLayoutWrapper({ children }) {
               </div>
             );
           }}
+          loading={loading}
         >
           {children}
-          {/* <PageContainer
-        token={{
-          paddingInlinePageContainerContent: 40,
-        }}
-      >
-        <ProCard>
-        </ProCard>
-      </PageContainer> */}
         </ProLayout>
       </ConfigProvider>
     </ProConfigProvider>

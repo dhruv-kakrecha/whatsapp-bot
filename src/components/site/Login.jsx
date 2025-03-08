@@ -1,5 +1,5 @@
-import { IdcardOutlined, KeyOutlined, LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Input, message, Result } from 'antd'
+import { KeyOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Input, message } from 'antd'
 import React from 'react'
 import axiosInstance from '../../axios/axiosInstance';
 import { useDispatch } from 'react-redux';
@@ -9,29 +9,16 @@ const Login = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
 
-    const handleLogin = async () => {
+    const handleLogin = async (userData) => {
         try {
-            await form.validateFields();
-
-            const userData = form.getFieldsValue()
-            // console.log("login data", data);
             const { data } = await axiosInstance.post("auth/login", userData)
 
-            if (data.result.ok) {
-                if (data.result.result) {
-                    dispatch(login({
-                        token: data.result.profile.token,
-                        user: data.result.profile,
-                        payment: data.result.payment
-                    }))
-                    message.success("Login successful");
-                } else {
-                    message.error(data.result.error);
-                }
+            if (data.success) {
+                message.success("Login Successful");
+                dispatch(login(data.token));
+            } else {
+                message.error(data.message);
             }
-
-
-
         } catch (error) {
             if (error.errorFields) {
                 message.error("Please fill all required fields.");
@@ -51,25 +38,28 @@ const Login = () => {
             height: "100vh"
         }}>
             <Card style={{
-                width: "30rem",
+                width: "25rem",
                 margin: 20,
                 padding: 20
             }}>
                 <h2>Login</h2>
-                <Form form={form} layout="vertical">
+                <Form form={form} layout="vertical" onFinish={() => {
+                    form.validateFields().then((values) => {
+                        handleLogin(values);
+                    });
+                }}>
                     <Form.Item
-                        label="Email"
-                        name="email"
+                        label="Username"
+                        name="username"
                         rules={[
                             {
                                 required: true,
-                                type: "email",
-                                message: "Please input a valid email!",
+                                message: "Please enter Username",
                             }
                         ]}
                         required
                     >
-                        <Input prefix={<MailOutlined />} placeholder="Email" />
+                        <Input prefix={<UserOutlined />} placeholder="UserName" />
                     </Form.Item>
 
                     <Form.Item
@@ -78,7 +68,7 @@ const Login = () => {
                         rules={[
                             {
                                 required: true,
-                                message: "Please input your password!",
+                                message: "Please enter Password",
                             }
                         ]}
                         required
@@ -86,22 +76,8 @@ const Login = () => {
                         <Input.Password prefix={<KeyOutlined />} type="password" placeholder="Password" />
                     </Form.Item>
 
-                    <Form.Item
-                        label="Client ID"
-                        name="client_id"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please input Client ID!",
-                            }
-                        ]}
-                        required
-                    >
-                        <Input prefix={<IdcardOutlined />} type="text" placeholder="Client Id" />
-                    </Form.Item>
-
                     <Form.Item>
-                        <Button type="primary" onClick={handleLogin}>
+                        <Button type="primary" htmlType='submit'>
                             Login
                         </Button>
                     </Form.Item>

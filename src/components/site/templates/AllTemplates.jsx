@@ -1,10 +1,9 @@
-import { Button, Card, Flex, message, Popconfirm, Radio, Row, Table, Tooltip, Typography } from 'antd';
+import { Button, Card, Flex, message, Modal, Popconfirm, Radio, Row, Table, Tooltip, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react'
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import TableActions from '../../common/TableActions';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import axiosInstance from '../../../axios/axiosInstance';
 import { render } from 'react-dom';
 
@@ -26,8 +25,9 @@ const AllTemplates = ({
 
     });
 
-    const CLIENT_ID = useSelector(state => state?.auth?.user?.tenantId)
     const navigate = useNavigate()
+
+    const [modal] = Modal.useModal();
 
     const getTemplatesData = async () => {
         setLoading(true);
@@ -97,6 +97,7 @@ const AllTemplates = ({
             })
             if (data.success) {
                 message.success(data.message)
+                getTemplatesData();
             } else {
                 message.error(data.message)
             }
@@ -148,11 +149,11 @@ const AllTemplates = ({
             title: "Actions",
             key: "action",
             fixed: "right",
-            width: 250,
+            width: 230,
             render: (_, record) => (
                 <Flex gap="small" vertical>
-                    <Flex wrap gap="small">
-                        <Button
+                    <Flex wrap gap="small" justify='end'>
+                        {!record?.submittedForReview && <Button
                             type='primary'
                             onClick={() => handleSubmitForReview(record)}
                             loading={submittingIds.includes(record._id)}
@@ -160,7 +161,7 @@ const AllTemplates = ({
 
                         >
                             {submittingIds.includes(record._id) ? "Submitting" : "Submit For Review"}
-                        </Button>
+                        </Button>}
                         <Tooltip
                             color="red"
                             title={<span style={{ fontSize: "0.8rem" }}>Delete</span>}

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import dayjs from 'dayjs';
 import { CheckOutlined, EyeOutlined, QuestionCircleOutlined, SendOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { Card, Col, DatePicker, Flex, Row, Tooltip, Typography } from 'antd';
@@ -7,14 +6,9 @@ import { FaReplyAll } from 'react-icons/fa';
 import { HiMiniSquare3Stack3D, HiOutlineArrowPathRoundedSquare } from 'react-icons/hi2';
 import { IoCheckmarkDone } from 'react-icons/io5';
 import { RxCrossCircled } from 'react-icons/rx';
-import moment from 'moment';
 import axiosInstance from '../../../axios/axiosInstance';
-import { useSelector } from 'react-redux';
 
 const Reports = () => {
-    const { RangePicker } = DatePicker;
-    const { payment } = useSelector(state => state.auth)
-
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
 
