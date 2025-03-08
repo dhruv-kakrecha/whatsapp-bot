@@ -59,12 +59,12 @@ function App() {
           <Route exact path="/reports" element={<RouteWrapper component={Reports} />} />
 
         </Routes>
-      ) : (
-        <Routes>
-          <Route exact path="/" element={<Login />} />
-          <Route exact path="*" element={<>Not Found</>} />
-        </Routes>
-      )}
+      {/* // ) : (
+      //   <Routes>
+      //     <Route exact path="/" element={<Login />} />
+      //     <Route exact path="*" element={<>Not Found</>} />
+      //   </Routes>
+      // )} */}
     </>
   );
 }
