@@ -19,7 +19,7 @@ import SingleCampaign from "./components/site/campaign/SingleCampaign";
 
 function App() {
 
-  const { isLoggedIn , token } = useSelector(state => state.auth)
+  const { isLoggedIn } = useSelector(state => state.auth)
   const RouteWrapper = ({ component: Component, ...props }) => {
     RouteWrapper.propTypes = {
       component: PropTypes.elementType.isRequired,
@@ -33,38 +33,38 @@ function App() {
 
   return (
     <>
-      {(isLoggedIn && token) ? (
-        <Routes>
-          <Route exact path="*" element={<>Not Found</>} />
-          <Route exact path="/" element={<RouteWrapper component={AllAccounts} showDelete />} />
+      {/* {isLoggedIn ? ( */}
+      <Routes>
+        <Route exact path="*" element={<>Not Found</>} />
+        <Route exact path="/" element={<RouteWrapper component={AllAccounts} showDelete />} />
 
-          <Route exact path="/templates" element={<RouteWrapper component={AllTemplates} showDelete />} />
-          <Route exact path="/templates/add" element={<RouteWrapper component={AddTemplate} />} />
+        <Route exact path="/templates" element={<RouteWrapper component={AllTemplates} showDelete />} />
+        <Route exact path="/templates/add" element={<RouteWrapper component={AddTemplate} />} />
 
-          <Route exact path="/contacts" element={<RouteWrapper component={AllContacts} showDelete />} />4
+        <Route exact path="/contacts" element={<RouteWrapper component={AllContacts} showDelete />} />4
 
-          <Route exact path="/accounts" element={<RouteWrapper component={AllAccounts} showDelete />} />
+        <Route exact path="/accounts" element={<RouteWrapper component={AllAccounts} showDelete />} />
 
-          <Route exact path="/campaign" element={<RouteWrapper component={AllCampaign} />} />
-          <Route exact path="/campaign/:id" element={<RouteWrapper component={SingleCampaign} />} />
-          <Route exact path="/campaign/add" element={<RouteWrapper component={Campaign} />} />
+        <Route exact path="/campaign" element={<RouteWrapper component={AllCampaign} />} />
+        <Route exact path="/campaign/:id" element={<RouteWrapper component={SingleCampaign} />} />
+        <Route exact path="/campaign/add" element={<RouteWrapper component={Campaign} />} />
 
-          <Route exact path="/reports" element={<RouteWrapper component={Reports} />} />
+        <Route exact path="/reports" element={<RouteWrapper component={Reports} />} />
 
-          <Route exact path="/reports/accounts" element={<RouteWrapper component={Accounts} />} />
-          <Route exact path="/reports/accounts/:id" element={<RouteWrapper component={SingleAccount} />} />
-          
-          <Route exact path="/reports/templates/:id" element={<RouteWrapper component={SingleTemplate} />} />
-          <Route exact path="/reports/templates" element={<RouteWrapper component={Templates} />} />
-          <Route exact path="/reports" element={<RouteWrapper component={Reports} />} />
+        <Route exact path="/reports/accounts" element={<RouteWrapper component={Accounts} />} />
+        <Route exact path="/reports/accounts/:id" element={<RouteWrapper component={SingleAccount} />} />
+        \
+        <Route exact path="/reports/templates/:id" element={<RouteWrapper component={SingleTemplate} />} />
+        <Route exact path="/reports/templates" element={<RouteWrapper component={Templates} />} />
+        <Route exact path="/reports" element={<RouteWrapper component={Reports} />} />
 
-        </Routes>
-      {/* // ) : (
-      //   <Routes>
-      //     <Route exact path="/" element={<Login />} />
-      //     <Route exact path="*" element={<>Not Found</>} />
-      //   </Routes>
-      // )} */}
+      </Routes>
+      ) : (
+      <Routes>
+        <Route exact path="/" element={<Login />} />
+        <Route exact path="*" element={<>Not Found</>} />
+      </Routes>
+      )}
     </>
   );
 }
