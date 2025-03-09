@@ -1,9 +1,12 @@
 import { KeyOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Input, message } from 'antd'
-import React from 'react'
+import { Button, Card, Form, Input, Typography, message } from 'antd';
+import { WhatsAppOutlined } from '@ant-design/icons';
+import React from 'react';
 import axiosInstance from '../../axios/axiosInstance';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/auth/authSlice';
+
+const { Title, Text } = Typography;
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -11,7 +14,7 @@ const Login = () => {
 
     const handleLogin = async (userData) => {
         try {
-            const { data } = await axiosInstance.post("auth/login", userData)
+            const { data } = await axiosInstance.post("auth/login", userData);
 
             if (data.success) {
                 message.success("Login Successful");
@@ -23,68 +26,79 @@ const Login = () => {
             if (error.errorFields) {
                 message.error("Please fill all required fields.");
             } else if (error.response) {
-                message.error("Failed to login , please try again");
+                message.error("Failed to login, please try again");
             } else {
                 message.error("An unexpected error occurred. Please try again.");
             }
         }
-    }
+    };
 
     return (
         <div style={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "100vh"
+            height: "98vh",
+            backgroundColor: "#E8F5E9"
         }}>
             <Card style={{
-                width: "25rem",
-                margin: 20,
-                padding: 20
+                width: "350px",
+                borderRadius: "16px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                padding: 20,
+                textAlign: 'center',
             }}>
-                <h2>Login</h2>
-                <Form form={form} layout="vertical" onFinish={() => {
-                    form.validateFields().then((values) => {
-                        handleLogin(values);
-                    });
-                }}>
+                <div style={{ marginBottom: "20px" }}>
+                    <WhatsAppOutlined style={{ fontSize: '48px', color: '#128C7E' }} />
+                    <Title level={2} style={{ color: '#075E54', marginTop: "10px" }}>Wati-Sender Bot</Title>
+                </div>
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={() => {
+                        form.validateFields().then((values) => handleLogin(values));
+                    }}
+                >
                     <Form.Item
-                        label="Username"
+                        label={<Text strong>Username</Text>}
                         name="username"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please enter Username",
-                            }
-                        ]}
-                        required
+                        rules={[{ required: true, message: "Please enter Username" }]}
                     >
-                        <Input prefix={<UserOutlined />} placeholder="UserName" />
+                        <Input
+                            prefix={<UserOutlined />}
+                            placeholder="Enter your username"
+                            size="large"
+                        />
                     </Form.Item>
 
                     <Form.Item
-                        label="Password"
+                        label={<Text strong>Password</Text>}
                         name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please enter Password",
-                            }
-                        ]}
-                        required
+                        rules={[{ required: true, message: "Please enter Password" }]}
                     >
-                        <Input.Password prefix={<KeyOutlined />} type="password" placeholder="Password" />
+                        <Input.Password
+                            prefix={<KeyOutlined />}
+                            placeholder="Enter your password"
+                            size="large"
+                        />
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" htmlType='submit'>
+                        <Button
+                            type="primary"
+                            htmlType='submit'
+                            style={{
+                                width: "100%",
+                                borderRadius: "8px"
+                            }}
+                        >
                             Login
                         </Button>
                     </Form.Item>
                 </Form>
             </Card>
         </div>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;

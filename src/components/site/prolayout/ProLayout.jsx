@@ -72,7 +72,7 @@ function ProLayoutWrapper({ children }) {
           {...props}
           layout="mix"
           onCollapse={setCollapsed}
-          logo={<>WhatsaApp Bot</>}
+          logo={<>Wati-Sender Bot</>}
           headerTitleRender={(logo, title, _) => {
             const defaultDom = (
               <Tooltip arrow={false} title={logo}>
