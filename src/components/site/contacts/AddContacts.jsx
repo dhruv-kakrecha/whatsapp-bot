@@ -52,19 +52,6 @@ const AddContacts = ({ open, handleCloseModal, handleSubmit, isEdit, singleData 
     >
       <Form form={form} layout="vertical">
         <Form.Item
-          label="Name"
-          name="name"
-          rules={[
-            {
-              required: true,
-              message: "Please enter a name!",
-            },
-          ]}
-        >
-          <Input placeholder="Enter Name" />
-        </Form.Item>
-
-        <Form.Item
           label="Contact Number"
           name="phone"
           rules={[
@@ -75,14 +62,13 @@ const AddContacts = ({ open, handleCloseModal, handleSubmit, isEdit, singleData 
           ]}
         >
           <PhoneInput
-            country={"in"} // Default country
-            value={`${countryCode}${phone}`} // Display full number for consistency
+            country={"in"} 
+            value={`${countryCode}${phone}`} 
             inputStyle={{ width: "100%" }}
             placeholder="Enter Phone Number"
             onChange={(value, country) => {
-              const dialCode = country.dialCode; // Get numerical country code
-              const mobileNumber = value.replace(dialCode, ""); // Remove country code
-              console.log("Phone Number", mobileNumber);
+              const dialCode = country.dialCode;
+              const mobileNumber = value.replace(dialCode, "");
 
               setPhone(mobileNumber);
               setCountryCode(dialCode);

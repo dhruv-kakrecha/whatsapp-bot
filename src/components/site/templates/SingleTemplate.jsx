@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import axiosInstance from '../../../../axios/axiosInstance'
+import axiosInstance from '../../../axios/axiosInstance'
 import { PageContainer, ProCard } from '@ant-design/pro-components'
 import { message } from 'antd'
 
@@ -13,7 +13,7 @@ const SingleTemplate = () => {
     const getTemplateData = async () => {
         try {
             setLoading(true)
-            const { data } = await axiosInstance.get(`/reports/template/bulkcreate/${id}`)
+            const { data } = await axiosInstance.get(`/templates/${id}`)
             if (data.success) {
                 setTemplate(data.report)
             }
@@ -25,7 +25,7 @@ const SingleTemplate = () => {
     }
 
     useEffect(() => {
-        getTemplateData()
+        if (id) getTemplateData()
     }, [id])
 
 

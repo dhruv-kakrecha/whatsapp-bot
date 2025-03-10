@@ -12,7 +12,7 @@ import Reports from "./components/site/reports/Reports";
 import AllContacts from "./components/site/contacts/AllContacts";
 import AllCampaign from "./components/site/campaign/AllCampaign";
 import Templates from "./components/site/reports/templates/Templates";
-import SingleTemplate from "./components/site/reports/templates/SingleTemplate";
+import SingleTemplate from "./components/site/templates/SingleTemplate";
 import Accounts from "./components/site/reports/accounts/Accounts";
 import SingleAccount from "./components/site/reports/accounts/SingleAccount";
 import SingleCampaign from "./components/site/campaign/SingleCampaign";
@@ -39,6 +39,7 @@ function App() {
           <Route exact path="/" element={<RouteWrapper component={AllAccounts} showDelete />} />
 
           <Route exact path="/templates" element={<RouteWrapper component={AllTemplates} showDelete />} />
+          <Route exact path="/templates/:id" element={<RouteWrapper component={SingleTemplate} />} />
           <Route exact path="/templates/add" element={<RouteWrapper component={AddTemplate} />} />
 
           <Route exact path="/contacts" element={<RouteWrapper component={AllContacts} showDelete />} />4
@@ -54,9 +55,9 @@ function App() {
           <Route exact path="/reports/accounts" element={<RouteWrapper component={Accounts} />} />
           <Route exact path="/reports/accounts/:id" element={<RouteWrapper component={SingleAccount} />} />
           \
-          <Route exact path="/reports/templates/:id" element={<RouteWrapper component={SingleTemplate} />} />
+          {/* <Route exact path="/reports/templates/:id" element={<RouteWrapper component={SingleTemplate} />} />
           <Route exact path="/reports/templates" element={<RouteWrapper component={Templates} />} />
-          <Route exact path="/reports" element={<RouteWrapper component={Reports} />} />
+          <Route exact path="/reports" element={<RouteWrapper component={Reports} />} /> */}
 
         </Routes>
       ) : (

@@ -3,7 +3,7 @@ import TextArea from 'antd/es/input/TextArea';
 import React, { useState } from 'react';
 import axiosInstance from '../../../axios/axiosInstance';
 
-const AddMultipleContacts = ({ open, handleClose,afterOk }) => {
+const AddMultipleContacts = ({ open, handleClose, afterOk }) => {
     const [enteredContactString, setEnteredContactString] = useState("");
     const [contacts, setContacts] = useState([]);
     const [errors, setErrors] = useState([]);
@@ -20,21 +20,36 @@ const AddMultipleContacts = ({ open, handleClose,afterOk }) => {
             return;
         }
 
+        // const rows = value.split("\n").map((line) => {
+        //     const values = line.split(" ").map((item) => item.trim());
+        //     return {
+        //         countryCode: values[0] || "",
+        //         phone: values[1] || "",
+        //     };
+        // });
+
+        // const rows = value.split("\n").map((line) => {
+        //     const delimiter = line.includes(",") ? "," : " ";
+        //     const values = line.split(delimiter).map((item) => item.trim());
+        //     return {
+        //         countryCode: values[0] || "",
+        //         phone: values[1] || "",
+        //     };
+        // }); 
+
         const rows = value.split("\n").map((line) => {
-            const values = line.split(",").map((item) => item.trim());
+            const values = line.split(/,|\s+/).map((item) => item.trim());
             return {
-                name: values[0] || "",
-                countryCode: values[1] || "",
-                phone: values[2] || "",
+                countryCode: values[0] || "",
+                phone: values[1] || "",
             };
         });
 
         setContacts(rows);
-        setErrors([]); // Reset errors when input changes
+        setErrors([]);
     };
 
     // Validation functions
-    const isInvalidName = (name) => !name.trim();
     const isInvalidCountryCode = (code) => !/^\d+$/.test(code);
     const isInvalidPhone = (phone) => !/^\d+$/.test(phone) || phone.length !== fixedPhoneLength;
 
@@ -43,7 +58,6 @@ const AddMultipleContacts = ({ open, handleClose,afterOk }) => {
 
         contacts.forEach((contact, index) => {
             let rowErrors = [];
-            if (isInvalidName(contact.name)) rowErrors.push("Name is required");
             if (isInvalidCountryCode(contact.countryCode)) rowErrors.push("Country Code must be numeric");
             if (isInvalidPhone(contact.phone)) rowErrors.push(`Phone Number must be exactly ${fixedPhoneLength} digits`);
 
@@ -76,7 +90,7 @@ const AddMultipleContacts = ({ open, handleClose,afterOk }) => {
                 setContacts([])
                 await afterOk();
             }
-            
+
         } else {
             handleClose();
         }
@@ -88,16 +102,6 @@ const AddMultipleContacts = ({ open, handleClose,afterOk }) => {
             width: 60,
             key: "sn",
             render: (text, record, index) => index + 1,
-        },
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-            render: (name) => (
-                <span style={{ color: isInvalidName(name) ? "red" : "inherit" }}>
-                    {name || ""}
-                </span>
-            ),
         },
         {
             title: 'Country Code',

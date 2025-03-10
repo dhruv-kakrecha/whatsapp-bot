@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import TableActions from '../../common/TableActions';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../axios/axiosInstance';
 import { render } from 'react-dom';
 
@@ -126,6 +126,7 @@ const AllTemplates = ({
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            render: (name, { _id }) => <Link to={_id}>{name}</Link>
         },
         {
             title: 'Success',
