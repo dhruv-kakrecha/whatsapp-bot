@@ -85,6 +85,7 @@ const Accounts = () => {
             title: 'Total',
             dataIndex: 'total',
             key: 'total',
+            render: (total) => `${total ?? 0} Accounts`
         },
         {
             title: 'Insert',
