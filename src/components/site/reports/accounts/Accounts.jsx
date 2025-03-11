@@ -85,24 +85,25 @@ const Accounts = () => {
             title: 'Total',
             dataIndex: 'total',
             key: 'total',
+            render: (total) => `${total ?? 0} Accounts`
         },
         {
-            title: 'Inserted',
+            title: 'Insert',
             dataIndex: 'inserted',
             key: 'inserted',
-            render: (accounts) => accounts?.length ?? 0
+            render: (accounts) => `${accounts?.length ?? 0} Accounts`
         },
         {
             title: 'Exist',
             dataIndex: 'exist',
             key: 'exist',
-            render: (accounts) => accounts.length ?? 0
+            render: (accounts) => `${accounts.length ?? 0} Accounts`
         },
         {
             title: 'Failed',
             dataIndex: 'failed',
             key: 'failed',
-            render: (accounts) => accounts?.length ?? 0
+            render: (accounts) => `${accounts?.length ?? 0} Accounts`
         },
         {
             title: 'Date, Time',

@@ -1,9 +1,11 @@
-import { PageContainer } from '@ant-design/pro-components';
-import { Button, Card, List, message, Table, Typography, Modal, Spin, Row, Col } from 'antd';
+import { PageContainer, StatisticCard } from '@ant-design/pro-components';
+import { Button, Card, message, Table, Typography, Modal, Spin } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import axiosInstance from '../../../axios/axiosInstance';
 import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, HourglassOutlined, LinkOutlined, SendOutlined } from '@ant-design/icons';
+
+const { Group, Divider } = StatisticCard;
 
 const SingleCampaign = () => {
     const { id } = useParams();
@@ -13,14 +15,6 @@ const SingleCampaign = () => {
     const [reportData, setReportData] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
-
-    const basicData = useMemo(() => [
-        { title: "Total Contacts", value: `${campaign?.totalContacts} Contacts`, color: "#1abc9c", bgColor: "#e6f9f5" },
-        { title: "Successful Contacts", value: `${campaign?.successCount} Contacts`, color: "#27ae60", bgColor: "#eaf9e9" },
-        { title: "Failed Contacts", value: `${campaign?.failedCount} Contacts`, color: "#e74c3c", bgColor: "#fdecea" },
-        { title: "Selected Template", value: campaign?.selectedTemplateName, color: "#9b59b6", bgColor: "#f5e6ff" },
-        { title: "Selected Accounts", value: `${campaign?.selectedAccounts?.length} Accounts`, color: "#e67e22", bgColor: "#fdf3e6" }
-    ], [campaign]);
 
     const statisticsIcons = {
         totalLinks: <LinkOutlined />,
@@ -34,6 +28,55 @@ const SingleCampaign = () => {
         totalStopped: <CloseCircleOutlined />,
         totalSending: <SendOutlined />
     };
+
+    const statisticData = useMemo(() => {
+
+        if (campaign?.statistics) {
+
+            const data = [
+                {
+                    title: "Sent",
+                    value: campaign?.statistics?.totalSent,
+                    status: 'default',
+                }, {
+                    title: "Delivered",
+                    value: campaign?.statistics?.totalDelivered,
+                    status: 'success',
+                }, {
+                    title: "Read",
+                    value: campaign?.statistics?.totalOpen,
+                    status: 'warning',
+                }, {
+                    title: "Replied",
+                    value: campaign?.statistics?.totalReplied,
+                    status: 'processing',
+                }, {
+                    title: "Sending",
+                    value: campaign?.statistics?.totalSending,
+                    status: 'processing',
+                }, {
+                    title: "Failed",
+                    value: campaign?.statistics?.totalFailed,
+                    status: 'error',
+                }, {
+                    title: "Processing",
+                    value: campaign?.statistics?.totalProcessing,
+                    status: 'processing',
+                }, {
+                    title: "Queued",
+                    value: campaign?.statistics?.totalQueued,
+                    status: 'default',
+                }
+            ]
+
+            return data
+        }
+
+    }, [campaign]);
+
+    console.log("statisticData", { campaign, statisticData });
+
+
 
     const handleViewReport = async (campaignId, accountId) => {
         setIsModalVisible(true);
@@ -57,7 +100,7 @@ const SingleCampaign = () => {
         try {
             const { data } = await axiosInstance.get(`/messages/campaigns/${id}`);
             if (data.success) {
-                setCampaign(data.campaign);
+                setCampaign(data);
             }
         } catch (error) {
             message.error(error.message);
@@ -105,24 +148,29 @@ const SingleCampaign = () => {
     ];
 
     return (
-        <PageContainer loading={loading} title={`Campaign Report : ${campaign ? campaign.name : ""}`}>
-            <List
-                grid={{ gutter: 16, column: 5 }}
-                dataSource={basicData}
-                renderItem={(item) => (
-                    <List.Item>
-                        <Card title={item.title} style={{ background: item?.bgColor, textAlign: 'center' }}>
-                            <Typography.Title level={5} style={{ color: item?.color, margin: 0 }}>
-                                {item.value}
-                            </Typography.Title>
-                        </Card>
-                    </List.Item>
-                )}
-            />
+        <PageContainer loading={loading} title={"Campaign Report"}>
+            <Card style={{ marginBottom: 16 }}>
+                <Typography.Text style={{ fontSize: 16 }}>Campaign Name:  <strong>{campaign?.campaign?.name} </strong></Typography.Text><br />
+                <Typography.Text style={{ fontSize: 16 }}>Selected Template: <strong>{campaign?.campaign?.selectedTemplateName}</strong></Typography.Text><br />
+                <Typography.Text style={{ fontSize: 16 }}>Selected Accounts: <strong>{campaign?.campaign?.selectedAccounts?.length} Accounts</strong></Typography.Text>
+            </Card>
+            <Group style={{ overflow: "auto" }} title={`Statistics${campaign?.statistics?.totalContacts ? `: Total ${campaign.statistics.totalContacts} Contacts` : ''}`} >
+                {statisticData?.map(({ title, value, status }) => (
+                    <StatisticCard
+                        statistic={{
+                            title: title,
+                            value: value,
+                            status: status,
+                        }}
+                    />
+
+                ))}
+            </Group>
+            <Divider />
             <Card title="Selected Accounts">
                 <Table
                     columns={columns}
-                    dataSource={campaign?.selectedAccounts ?? []}
+                    dataSource={campaign?.campaign?.selectedAccounts ?? []}
                     pagination={{
                         current: pagination.current,
                         pageSize: pagination.pageSize,
@@ -132,7 +180,7 @@ const SingleCampaign = () => {
             </Card>
 
             <Modal
-                title={`Account Report ${reportLoading ? "" :  " of " + reportData?.account?.username || "" }`}
+                title={`Account Report ${reportLoading ? "" : " of " + reportData?.account?.username || ""}`}
                 open={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
                 footer={null}
@@ -147,6 +195,8 @@ const SingleCampaign = () => {
                             <Typography.Text><strong>Phone:</strong> +{reportData.account.phone}</Typography.Text><br />
                             <Typography.Text><strong>Username:</strong> {reportData.account.username}</Typography.Text>
                         </Card>
+
+                        <Typography.Title level={5}>Statistics {reportData?.statistics?.totalContacts ? `: Total ${reportData.statistics.totalContacts} Contacts` : ''}</Typography.Title>
                         <div style={{
                             display: 'flex',
                             flexWrap: 'wrap',
@@ -156,6 +206,7 @@ const SingleCampaign = () => {
                         }}>
                             {Object.entries(reportData.statistics)
                                 .filter(([key]) => key !== 'broadcastId')
+                                .filter(([key]) => key !== 'totalContacts')
                                 .map(([key, value], index) => (
                                     <Card
                                         key={index}
@@ -186,7 +237,7 @@ const SingleCampaign = () => {
                     <Typography.Text>No report available.</Typography.Text>
                 )}
             </Modal>
-        </PageContainer>
+        </PageContainer >
     );
 };
 

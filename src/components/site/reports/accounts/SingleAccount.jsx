@@ -36,7 +36,7 @@ const SingleAccount = () => {
         },
         {
             label: `Exists (${accountReport?.exist?.length ?? 0})`,
-            key: "exists"
+            key: "exist"
         },
         {
             label: `Failed (${accountReport?.failed?.length ?? 0})`,
@@ -91,7 +91,7 @@ const SingleAccount = () => {
     return (
         <PageContainer title={`Account Import Reports ${(!loading && accountReport?.total > 0) ? ": Total " + accountReport?.total : ""}`} loading={loading}>
             <Tabs type='card' items={tabItems} activeKey={activeKey} onChange={setActiveKey} />
-
+            
             <Table
                 columns={columns}
                 dataSource={tableData}

@@ -105,56 +105,56 @@ const AllCampaign = () => {
             key: 'selectedTemplateName',
         },
         {
-            title: 'Total recipients',
+            title: 'Total contacts',
             dataIndex: 'totalContacts',
             key: 'totalContacts',
             render: (recipients) => `${recipients} Contacts`
         },
-        {
-            title: 'Successful',
-            dataIndex: 'successCount',
-            key: 'successCount',
-            render: (count, record) => {
-                const percent = ((count * 100) / record.totalContacts)
+        // {
+        //     title: 'Successful',
+        //     dataIndex: 'successCount',
+        //     key: 'successCount',
+        //     render: (count, record) => {
+        //         const percent = ((count * 100) / record.totalContacts)
 
-                return (
-                    <Space direction='vertical'>
-                        <Text>{count} contacts </Text>
-                        <Progress
-                            percent={percent ?? 0}
-                            percentPosition={{
-                                align: 'center',
-                                type: 'inner',
-                            }}
-                            size={[100, 20]}
-                            strokeColor={percent === 0 ? "#CCFFCC" : "green"}
-                        />
-                    </Space>
-                )
-            }
-        },
-        {
-            title: 'Failed',
-            dataIndex: 'failedCount',
-            key: 'failedCount',
-            render: (count, record) => {
-                const percent = ((count * 100) / record.totalContacts)
-                return (
-                    <Space direction='vertical'>
-                        <Text>{count} contacts </Text>
-                        <Progress
-                            percent={percent ?? 0}
-                            percentPosition={{
-                                align: 'center',
-                                type: 'inner',
-                            }}
-                            size={[100, 20]}
-                            strokeColor={percent === 0 ? "#FFCCCC" : "#FF6666"}
-                        />
-                    </Space>
-                )
-            }
-        },
+        //         return (
+        //             <Space direction='vertical'>
+        //                 <Text>{count} contacts </Text>
+        //                 <Progress
+        //                     percent={percent ?? 0}
+        //                     percentPosition={{
+        //                         align: 'center',
+        //                         type: 'inner',
+        //                     }}
+        //                     size={[100, 20]}
+        //                     strokeColor={percent === 0 ? "#CCFFCC" : "green"}
+        //                 />
+        //             </Space>
+        //         )
+        //     }
+        // },
+        // {
+        //     title: 'Failed',
+        //     dataIndex: 'failedCount',
+        //     key: 'failedCount',
+        //     render: (count, record) => {
+        //         const percent = ((count * 100) / record.totalContacts)
+        //         return (
+        //             <Space direction='vertical'>
+        //                 <Text>{count} contacts </Text>
+        //                 <Progress
+        //                     percent={percent ?? 0}
+        //                     percentPosition={{
+        //                         align: 'center',
+        //                         type: 'inner',
+        //                     }}
+        //                     size={[100, 20]}
+        //                     strokeColor={percent === 0 ? "#FFCCCC" : "#FF6666"}
+        //                 />
+        //             </Space>
+        //         )
+        //     }
+        // },
         {
             title: "Actions",
             key: "action",
