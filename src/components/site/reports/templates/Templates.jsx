@@ -14,7 +14,6 @@ const Templates = () => {
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
-
     });
 
 
@@ -90,6 +89,11 @@ const Templates = () => {
             }
         },
         {
+            title: 'Total Accounts',
+            dataIndex: 'totalAccounts',
+            key: 'totalAccounts',
+        },
+        {
             title: 'Success Accounts',
             dataIndex: 'success',
             key: 'success',
@@ -100,11 +104,6 @@ const Templates = () => {
             dataIndex: 'failed',
             key: 'failed',
             render: (accounts) => accounts?.length ?? 0
-        },
-        {
-            title: 'Total Accounts',
-            dataIndex: 'totalAccounts',
-            key: 'totalAccounts',
         },
         {
             title: "Actions",

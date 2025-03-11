@@ -54,10 +54,10 @@ function App() {
 
           <Route exact path="/reports/accounts" element={<RouteWrapper component={Accounts} />} />
           <Route exact path="/reports/accounts/:id" element={<RouteWrapper component={SingleAccount} />} />
-          \
-          {/* <Route exact path="/reports/templates/:id" element={<RouteWrapper component={SingleTemplate} />} />
+          
+          <Route exact path="/reports/templates/:id" element={<RouteWrapper component={SingleTemplate} />} />
           <Route exact path="/reports/templates" element={<RouteWrapper component={Templates} />} />
-          <Route exact path="/reports" element={<RouteWrapper component={Reports} />} /> */}
+          {/* <Route exact path="/reports" element={<RouteWrapper component={Reports} />} /> */}
 
         </Routes>
       ) : (

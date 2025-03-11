@@ -33,6 +33,10 @@ const menu = {
             path: "accounts",
             name: "Accounts",
           },
+          {
+            path: "templates",
+            name: "Templates",
+          },
         ]
       },
 
