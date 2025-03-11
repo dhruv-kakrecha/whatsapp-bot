@@ -66,7 +66,7 @@ const SingleTemplate = () => {
             dataIndex: 'reviewStatus',
             key: 'reviewStatus',
             render: (status) => (
-                <Tag color={TEMPLATE_STATUS["PENDING"]}>{status}</Tag>
+                <Tag color={TEMPLATE_STATUS[status]}>{status}</Tag>
             )
         },
         {
