@@ -44,7 +44,6 @@ const Campaign = () => {
     {
       title: "Contact",
       content: <AllContacts
-        showSelect
         selectedContacts={selectedContacts}
         setSelectedContacts={setSelectedContacts}
       />,

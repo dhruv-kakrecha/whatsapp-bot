@@ -10,8 +10,6 @@ import AddMultipleContacts from './AddMultipleContacts';
 
 
 const AllContacts = ({
-    showDelete,
-    showSelect,
     selectedContacts = [],
     setSelectedContacts
 }) => {
@@ -21,7 +19,7 @@ const AllContacts = ({
     const [addMultipleModal, setAddMultipleModal] = useState(false);
 
     useEffect(() => {
-        setSelectedContacts(contacts)
+        if (typeof setSelectedContacts === 'function') setSelectedContacts(contacts)
     }, [contacts])
 
     const handleUpload = async (file) => {

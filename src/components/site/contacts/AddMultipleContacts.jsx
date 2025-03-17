@@ -14,22 +14,24 @@ const AddMultipleContacts = ({ open, setOpen, setContactsData }) => {
         const { value } = e.target;
         setEnteredContactString(value);
 
-        if (!value) {
+        if (!value.trim()) {
             setContacts([]);
             return;
         }
 
-        const rows = value.split("\n").map((line) => {
-            const values = line.split(/,|\s+/).map((item) => item.trim());
-            return {
-                countryCode: values[0] || "",
-                phone: values[1] || "",
-            };
-        });
+        const rows = value
+            .split(/[\n,]+/)
+            .flatMap((line) => line.trim().split(/\s+/))
+            .filter(Boolean)
+            .map((phone) => ({
+                countryCode: "91",
+                phone,
+            }));
 
         setContacts(rows);
         setErrors([]);
     };
+
 
     // Validation functions
     const isInvalidCountryCode = (code) => !/^\d+$/.test(code);
