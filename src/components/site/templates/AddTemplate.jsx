@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Flex, Form, Input, message, Row, Select, Space, Typography } from "antd";
+import { Button, Card, Col, Flex, Form, Input, message, Row, Select, Space, Typography } from "antd";
 import Buttons from "./Buttons";
 import { PageContainer, ProCard } from "@ant-design/pro-components";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios/axiosInstance";
 import UploadMedia from "./UploadMedia";
+import { UploadOutlined } from "@ant-design/icons";
 
 const AddTemplate = () => {
     const navigate = useNavigate()
@@ -223,7 +224,12 @@ const AddTemplate = () => {
                                         ]}
                                     >
                                         <Space direction="vertical" style={{ width: "100%" }}>
-                                            <UploadMedia url={imageUrl} loading={imageUploading} handleUpload={handleUpload} />
+                                            {/* <UploadMedia url={imageUrl} loading={imageUploading} handleUpload={handleUpload} /> */}
+                                            <Card>
+                                                <Button type="primary" icon={<UploadOutlined />}>
+                                                    Upload Media
+                                                </Button>
+                                            </Card>
                                             <Text>OR</Text>
                                             <Input
                                                 placeholder="Image Url"

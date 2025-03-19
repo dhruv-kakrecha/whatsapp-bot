@@ -123,6 +123,7 @@ const AddMultipleContacts = ({ open, setOpen, setContactsData }) => {
                 dataSource={contacts}
                 rowKey={(record, index) => index}
                 pagination={false}
+                scroll={{ y: 600 }}
             />
         </Modal>
     );
