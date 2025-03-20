@@ -1,24 +1,50 @@
-import { InboxOutlined, LoadingOutlined, UploadOutlined } from '@ant-design/icons'
-import { Button, Card } from 'antd'
+import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
+import { Button, Card, message } from 'antd'
 import Dragger from 'antd/es/upload/Dragger'
-import React from 'react'
+import React, { useState } from 'react'
+import axiosInstance from '../../../axios/axiosInstance'
 
-const UploadMedia = ({
-    url,
-    loading,
-    handleUpload
-}) => {
+const UploadMedia = () => {
+
+    const [imageUrl, setImageUrl] = useState("http://res.cloudinary.com/dmwgmfl0h/image/upload/v1742039317/watisender/wqbamdrlgta3duclvuor.jpg");
+    const [imageUploading, setImageUploading] = useState(false)
+
+    const handleUpload = async ({ file }) => {
+        try {
+            setImageUploading(true);
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("type", "image");
+
+            const { data } = await axiosInstance.post("/media/upload", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (data?.success) {
+                message.success(data?.message)
+                setImageUrl(data?.data?.url);
+            } else {
+                message.success(data?.message)
+            }
+        } catch (error) {
+            message.error(error.message);
+        } finally {
+            setImageUploading(false);
+        }
 
 
+    }
     return (
         <div>
             <Dragger
                 multiple={false}
                 showUploadList={false}
                 customRequest={handleUpload}>
-                {url ? <img src={url} alt="" height={165} /> : <>
+                {imageUrl ? <img src={imageUrl} alt="" height={165} /> : <>
                     <Card>
-                        {loading ? (<LoadingOutlined />) : (<>
+                        {imageUploading ? (<LoadingOutlined />) : (<>
                             <Button type="primary" icon={<UploadOutlined />}>
                                 Upload Media
                             </Button>
