@@ -96,6 +96,23 @@ const SingleCampaign = () => {
         if (id) getCampaignData();
     }, [id]);
 
+    const isErrorAcc = (username) => {
+        let err = false
+
+        if (campaign?.error.length === 0) {
+            err = false
+        }
+
+        const errAcc = campaign?.error?.find(acc => acc.username === username)
+
+        if (errAcc) {
+            err = errAcc
+        }
+
+        return err
+    }
+
+
     const columns = [
         {
             title: "SN",
@@ -113,6 +130,18 @@ const SingleCampaign = () => {
         { title: 'Username', dataIndex: 'username', key: 'username' },
         { title: 'Password', dataIndex: 'password', key: 'password' },
         {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => status ?? "-",
+        },
+        {
+            title: 'Quality Rating',
+            dataIndex: 'qualityRating',
+            key: 'qualityRating',
+            render: (rating) => rating ?? "-",
+        },
+        {
             title: 'Login URL',
             dataIndex: 'loginUrl',
             key: 'loginUrl',
@@ -122,7 +151,7 @@ const SingleCampaign = () => {
             title: "Actions",
             key: "action",
             fixed: "right",
-            width: 100,
+            width: 130,
             render: (_, record) => (
                 <Button type='primary' onClick={() => handleViewReport(id, record?._id)}>
                     View Report
@@ -143,6 +172,9 @@ const SingleCampaign = () => {
                 <Table
                     columns={columns}
                     dataSource={campaign?.campaign?.selectedAccounts ?? []}
+                    scroll={{
+                        x: 1000,
+                    }}
                     pagination={{
                         current: pagination.current,
                         pageSize: pagination.pageSize,

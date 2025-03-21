@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Dropdown, Flex, Form, message, Modal, Popconfirm, Row, Select, Table, Tooltip, Typography, Upload } from 'antd';
+import { Button, Card, Checkbox, Dropdown, Flex, Form, message, Modal, Popconfirm, Row, Select, Table, Tag, Tooltip, Typography, Upload } from 'antd';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { DeleteOutlined, DownOutlined, FilterOutlined, ImportOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
@@ -8,7 +8,7 @@ import axiosInstance from '../../../axios/axiosInstance';
 import { Link } from 'react-router-dom';
 import { useDebounce } from '../useDebounce';
 
-
+const { Text } = Typography
 const AllAccounts = ({
     showSelect,
     showDelete,
@@ -258,10 +258,22 @@ const AllAccounts = ({
             render: (username) => username ?? "-",
         },
         {
+            title: 'Wallet',
+            dataIndex: 'wallet',
+            key: 'wallet',
+            render: (wallet) => <Text strong style={{ color: wallet < 0 ? "#FF6347" : "#00B16A" }}>{"₹" + wallet}</Text> ?? "-",
+        },
+        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
             render: (status) => status ?? "-",
+        },
+        {
+            title: 'Quality Rating',
+            dataIndex: 'qualityRating',
+            key: 'qualityRating',
+            render: (rating) => rating ?? "-",
         },
         {
             title: 'Password',
@@ -323,6 +335,8 @@ const AllAccounts = ({
                 />
 
                 <Card>
+                    <Text>Last Update : {new Date(allAccounts[0]?.updatedAt).toLocaleString()}</Text>
+                    <br /> <br />
                     <Table
                         rowSelection={showSelect ? rowSelection : showDelete && rowSelectionDelete}
                         columns={columns}
@@ -402,8 +416,8 @@ const AllAccounts = ({
                             options={[
                                 { label: "ALL", value: "ALL" },
                                 { label: "GREEN", value: "GREEN" },
-                                { label: "MEDIUM", value: "MEDIUM" },
-                                { label: "LOW", value: "LOW" },
+                                { label: "YELLOW", value: "YELLOW" },
+                                { label: "UNKNOWN", value: "UNKNOWN" },
                             ]}
                         />
                     </Form.Item>
