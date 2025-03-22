@@ -328,13 +328,13 @@ const AllAccounts = ({
             title: 'Password',
             dataIndex: 'password',
             key: 'password',
-            render: (password) => password ?? "-",
+            render: (password) => <Text copyable>{password}</Text> ?? "-",
         },
         {
             title: 'Login URL',
             dataIndex: 'loginUrl',
             key: 'loginUrl',
-            render: (loginUrl) => <Link to={loginUrl} target='_blank'>{loginUrl} </Link> ?? "-",
+            render: (loginUrl, { username, password }) => <Link to={`${loginUrl}?email=${username}`} target='_blank'>{loginUrl} </Link> ?? "-",
         },
         {
             title: "Actions",
