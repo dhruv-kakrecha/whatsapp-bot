@@ -366,7 +366,7 @@ const AllAccounts = ({
             dataIndex: 'loginUrl',
             key: 'loginUrl',
             width: 250,
-            render: (loginUrl, { username, password }) => <Link to={`${loginUrl}?email=${username}`} target='_blank'>{loginUrl} </Link> ?? "-",
+            render: (loginUrl, { username }) => <Link to={`${loginUrl}?email=${username}`} target='_blank'>{loginUrl} </Link> ?? "-",
         },
         {
             title: "Actions",
