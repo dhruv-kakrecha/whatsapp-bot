@@ -3,6 +3,8 @@ import { Button, Card, message, Table, Typography, Modal, Spin } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import axiosInstance from '../../../axios/axiosInstance';
+
+const { Text } = Typography
 const SingleCampaign = () => {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
@@ -112,6 +114,17 @@ const SingleCampaign = () => {
         return err
     }
 
+    const CURRENCY_SYMBOL = {
+        "INR": "₹",
+        "USD": "$",
+    }
+
+    const MESSAGES_TEIRS = {
+        TIER_1K: "1000 Messages",
+        TIER_10K: "10000 Messages",
+        TIER_100K: "100000 Messages",
+    }
+
 
     const columns = [
         {
@@ -124,28 +137,62 @@ const SingleCampaign = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            width: 120,
             render: (name) => name ?? "-",
         },
-        { title: 'Phone', dataIndex: 'phone', key: 'phone' },
-        { title: 'Username', dataIndex: 'username', key: 'username' },
-        { title: 'Password', dataIndex: 'password', key: 'password' },
+        {
+            title: 'Phone',
+            dataIndex: 'phone',
+            key: 'phone',
+            width: 150
+        },
+        {
+            title: 'Username',
+            dataIndex: 'username',
+            key: 'username',
+            width: 250,
+        },
+        {
+            title: 'Wallet',
+            dataIndex: 'wallet',
+            key: 'wallet',
+            width: 150,
+            render: (wallet, { currency = "INR" }) => wallet ? <Text strong style={{ color: wallet < 0 ? "#FF6347" : "#00B16A" }}>{CURRENCY_SYMBOL[currency] + wallet}</Text> : "-",
+        },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
+            width: 120,
             render: (status) => status ?? "-",
         },
         {
             title: 'Quality Rating',
             dataIndex: 'qualityRating',
             key: 'qualityRating',
+            width: 150,
             render: (rating) => rating ?? "-",
+        },
+        {
+            title: 'Message Limit',
+            dataIndex: 'messageTier',
+            key: 'messageTier',
+            width: 150,
+            render: (tier) => MESSAGES_TEIRS[tier] ?? "-",
+        },
+        {
+            title: 'Password',
+            dataIndex: 'password',
+            key: 'password',
+            width: 200,
+            render: (password) => <Text copyable>{password}</Text> ?? "-",
         },
         {
             title: 'Login URL',
             dataIndex: 'loginUrl',
             key: 'loginUrl',
-            render: (loginUrl) => loginUrl ? <Link to={loginUrl} target='_blank'>{loginUrl}</Link> : "-",
+            width: 250,
+            render: (loginUrl, { username }) => <Link to={`${loginUrl}?email=${username}`} target='_blank'>{loginUrl} </Link> ?? "-",
         },
         {
             title: "Actions",
@@ -173,7 +220,7 @@ const SingleCampaign = () => {
                     columns={columns}
                     dataSource={campaign?.campaign?.selectedAccounts ?? []}
                     scroll={{
-                        x: 1000,
+                        x: 1500,
                     }}
                     pagination={{
                         current: pagination.current,
