@@ -1,5 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Card, message, Table, Typography, Modal, Spin } from 'antd';
+import { Button, Card, message, Table, Typography, Modal, Spin, Row, Col, Flex } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import axiosInstance from '../../../axios/axiosInstance';
@@ -241,52 +241,58 @@ const SingleCampaign = () => {
                     <Spin size="large" style={{ display: 'flex', justifyContent: 'center' }} />
                 ) : reportData ? (
                     <>
-                        <Card style={{ marginBottom: 16 }} styles={{ body: { padding: 15 }, header: { padding: 15 } }} title="Campaign Details">
-                            <Typography.Text><strong>Campaign Name:</strong> {reportData?.broadcast?.name}</Typography.Text><br />
-                            <Typography.Text><strong>Status:</strong> {reportData?.broadcast?.status}</Typography.Text><br />
-                            <Typography.Text><strong>Sent At:</strong> {new Date(reportData?.broadcast?.sentAt).toLocaleString()}</Typography.Text>
-                        </Card>
-                        <Card style={{ marginBottom: 16 }} styles={{ body: { padding: 15 }, header: { padding: 15 } }} title="Account Details">
-                            <Typography.Text><strong>Name:</strong> {reportData.account.name}</Typography.Text><br />
-                            <Typography.Text><strong>Phone:</strong> {reportData.account.phone}</Typography.Text><br />
-                            <Typography.Text><strong>Username:</strong> {reportData.account.username}</Typography.Text>
-                        </Card>
+                        <Row gutter={24}>
+                            <Col xs={24} lg={12}>
+                                <Card style={{ marginBottom: 16 }} styles={{ body: { padding: 15 }, header: { padding: 15 } }} title="Campaign Details">
+                                    <Typography.Text><strong>Campaign Name:</strong> {reportData?.broadcast?.name}</Typography.Text><br />
+                                    <Typography.Text><strong>Status:</strong> {reportData?.broadcast?.status}</Typography.Text><br />
+                                    <Typography.Text><strong>Sent At:</strong> {new Date(reportData?.broadcast?.sentAt).toLocaleString()}</Typography.Text>
+                                </Card>
+                            </Col>
+                            <Col xs={24} lg={12}>
+                                <Card style={{ marginBottom: 16 }} styles={{ body: { padding: 15 }, header: { padding: 15 } }} title="Account Details">
+                                    <Typography.Text><strong>Name:</strong> {reportData.account.name}</Typography.Text><br />
+                                    <Typography.Text><strong>Phone:</strong> {reportData.account.phone}</Typography.Text><br />
+                                    <Typography.Text><strong>Username:</strong> {reportData.account.username}</Typography.Text>
+                                </Card>
+                            </Col>
+                            <Col span={24}>
+                                <Card style={{ marginBottom: 16 }} styles={{ body: { padding: 15 }, header: { padding: "0 15px" } }} title={<Flex align='center' justify='space-between'><p>Statistics</p></Flex>}>
+                                    <div style={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        justifyContent: 'space-between',
+                                        gap: '16px',
+                                        marginBottom: '16px'
+                                    }}>
+                                        {Object.entries(reportData.statistics)
+                                            .map(([key, value], index) => (
+                                                <Card
+                                                    key={index}
+                                                    size="small"
+                                                    style={{
+                                                        flex: '1 1 calc(20% - 16px)',
+                                                        textAlign: 'center',
+                                                        background: "#f9f9f9",
+                                                        borderRadius: 8,
+                                                        padding: 8,
+                                                        minWidth: '150px',
+                                                        maxWidth: '200px'
+                                                    }}
+                                                >
+                                                    <Typography.Title level={5} style={{ marginTop: 8, fontSize: 16 }}>
+                                                        {value}
+                                                    </Typography.Title>
+                                                    <Typography.Text style={{ fontSize: 12, textTransform: 'capitalize' }}>
+                                                        {key}
+                                                    </Typography.Text>
+                                                </Card>
+                                            ))}
+                                    </div>
+                                </Card>
+                            </Col>
 
-                        <Typography.Title level={5}>Statistics {reportData?.statistics?.totalContacts ? `: Total ${reportData.statistics.totalContacts} Contacts` : ''}</Typography.Title>
-                        <div style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            justifyContent: 'space-between', // Ensures 5 in a row
-                            gap: '16px', // Controls spacing
-                            marginBottom: '16px'
-                        }}>
-                            {Object.entries(reportData.statistics)
-                                .filter(([key]) => key !== 'broadcastId')
-                                .filter(([key]) => key !== 'totalContacts')
-                                .map(([key, value], index) => (
-                                    <Card
-                                        key={index}
-                                        size="small"
-                                        style={{
-                                            flex: '1 1 calc(20% - 16px)', // Ensures exactly 5 cards per row
-                                            textAlign: 'center',
-                                            background: "#f9f9f9",
-                                            borderRadius: 8,
-                                            padding: 8,
-                                            minWidth: '150px', // Prevents too small cards on small screens
-                                            maxWidth: '200px' // Keeps consistent size
-                                        }}
-                                    >
-                                        <Typography.Title level={5} style={{ marginTop: 8, fontSize: 16 }}>
-                                            {value}
-                                        </Typography.Title>
-                                        <Typography.Text style={{ fontSize: 12, textTransform: 'capitalize' }}>
-                                            {key}
-                                        </Typography.Text>
-                                    </Card>
-                                ))}
-                        </div>
-
+                        </Row>
                     </>
                 ) : (
                     <Typography.Text>No report available.</Typography.Text>
