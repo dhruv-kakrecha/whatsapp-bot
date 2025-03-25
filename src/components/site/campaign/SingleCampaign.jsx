@@ -3,6 +3,7 @@ import { Button, Card, message, Table, Typography, Modal, Spin, Row, Col, Flex }
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import axiosInstance from '../../../axios/axiosInstance';
+import StatisticsDrawer from './StatisticsDrawer';
 
 const { Text } = Typography
 const SingleCampaign = () => {
@@ -12,7 +13,11 @@ const SingleCampaign = () => {
     const [campaign, setCampaign] = useState(null);
     const [reportData, setReportData] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [statisticsDrawer, setstatisticsDrawer] = useState(false);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
+
+    const [currentAccId, setCurrentAccId] = useState("");
+    const [watiCampId, setWatiCampId] = useState("");
 
     const statisticData = useMemo(() => {
 
@@ -70,6 +75,8 @@ const SingleCampaign = () => {
             const { data } = await axiosInstance.post("/messages/campaign/report/account", { campaignId, accountId });
             if (data.success) {
                 setReportData(data);
+                setCurrentAccId(accountId);
+                setWatiCampId(data?.broadcast?.wati_broadcastId);
             } else {
                 message.error(data.message);
             }
@@ -79,6 +86,8 @@ const SingleCampaign = () => {
             setReportLoading(false);
         }
     };
+
+
 
     const getCampaignData = async () => {
         setLoading(true);
@@ -233,7 +242,18 @@ const SingleCampaign = () => {
             <Modal
                 title={`Account Report ${reportLoading ? "" : " of " + reportData?.account?.username || ""}`}
                 open={isModalVisible}
-                onCancel={() => setIsModalVisible(false)}
+                onCancel={() => {
+                    setIsModalVisible(false);
+                    setReportData(null);
+                    setCurrentAccId(null);
+                    setWatiCampId(null);
+                }}
+                onClose={() => {
+                    setIsModalVisible(false);
+                    setReportData(null);
+                    setCurrentAccId(null);
+                    setWatiCampId(null);
+                }}
                 footer={null}
                 width={900}
             >
@@ -257,7 +277,7 @@ const SingleCampaign = () => {
                                 </Card>
                             </Col>
                             <Col span={24}>
-                                <Card style={{ marginBottom: 16 }} styles={{ body: { padding: 15 }, header: { padding: "0 15px" } }} title={<Flex align='center' justify='space-between'><p>Statistics</p></Flex>}>
+                                <Card style={{ marginBottom: 16 }} styles={{ body: { padding: 15 }, header: { padding: "0 15px" } }} title={<Flex align='center' justify='space-between'><p>Statistics</p><Button type='primary' onClick={() => setstatisticsDrawer(true)}>View Statistics</Button></Flex>}>
                                     <div style={{
                                         display: 'flex',
                                         flexWrap: 'wrap',
@@ -298,6 +318,8 @@ const SingleCampaign = () => {
                     <Typography.Text>No report available.</Typography.Text>
                 )}
             </Modal>
+            <StatisticsDrawer open={statisticsDrawer} setOpen={setstatisticsDrawer} accountId={currentAccId} watiCampaignId={watiCampId} />
+
         </PageContainer >
     );
 };
