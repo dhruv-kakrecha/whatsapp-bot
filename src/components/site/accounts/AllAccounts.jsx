@@ -145,11 +145,11 @@ const AllAccounts = ({
             const queryParams = new URLSearchParams();
 
             if (!query.account_status.includes("ALL")) {
-                queryParams.append("account_status", query.account_status);
+                queryParams.append("account_status", query.account_status.join("_"));
             }
 
             if (!query.quality_rating.includes("ALL")) {
-                queryParams.append("quality_rating", query.quality_rating);
+                queryParams.append("quality_rating", query.quality_rating.join("_"));
             }
 
             if (!query.tier.includes("ALL")) {
@@ -237,11 +237,11 @@ const AllAccounts = ({
             queryParams.append("limit", total);
 
             if (!query.account_status.includes("ALL")) {
-                queryParams.append("account_status", query.account_status);
+                queryParams.append("account_status", query.account_status.join("_"));
             }
 
             if (!query.quality_rating.includes("ALL")) {
-                queryParams.append("quality_rating", query.quality_rating);
+                queryParams.append("quality_rating", query.quality_rating.join("_"));
             }
 
             if (!query.tier.includes("ALL")) {
