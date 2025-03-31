@@ -436,9 +436,10 @@ const AllAccounts = ({
                             x: 1500,
                         }}
                         pagination={{
-                            total: total,
+                            total,
                             current: page,
                             pageSize: pageSize,
+                            showSizeChanger: true,
                             onChange(p, ps) {
                                 if (p !== page) setPage(p);
                                 if (ps !== pageSize) setPageSize(ps);
